@@ -1,7 +1,7 @@
-from function import connection
+# from function import connection
 
-db = connection()
-cursor = db.cursor()
+# db = connection()
+# cursor = db.cursor()
 
 # search = """
 #     SELECT * FROM attractions
@@ -34,10 +34,13 @@ cursor = db.cursor()
 #     attraction_data["image"] = images
 #     print(attraction_data)
 
-cursor.execute("SELECT category FROM attractions")
-categories = cursor.fetchall()
-categories_list = []
-for category in categories:
-    if category[0] not in categories_list:
-        categories_list.append(category[0])
-print(categories_list)
+# cursor.execute("SELECT category FROM attractions")
+# categories = cursor.fetchall()
+# categories_list = []
+# for category in categories:
+#     if category[0] not in categories_list:
+#         categories_list.append(category[0])
+# print(categories_list)
+
+
+print("hello world")
