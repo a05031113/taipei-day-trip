@@ -1,5 +1,4 @@
 from flask import *
-import mysql.connector as connector
 from function import connection
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False

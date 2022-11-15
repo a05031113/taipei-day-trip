@@ -1,4 +1,3 @@
-import mysql.connector as connector
 from function import connection
 
 db = connection()
