@@ -33,11 +33,39 @@ cursor = db.cursor()
 #     # attraction_data["lng"] = attraction[8]
 #     attraction_data["image"] = images
 #     print(attraction_data)
+# keyword = "養生溫泉"
+# search = """
+#     SELECT name FROM attractions
+#     WHERE (category = %s OR name LIKE %s)
+#     LIMIT 1, 12
+#     """
+# search_val = (keyword, "%"+keyword+"%")
+# cursor.execute(search, search_val)
+# categories = cursor.fetchall()
+# print(categories)
+# print(len(categories))
+page = 1
+if page > 0:
+    page = int(page)
 
-cursor.execute("SELECT category FROM attractions")
-categories = cursor.fetchall()
-categories_list = []
-for category in categories:
-    if category[0] not in categories_list:
-        categories_list.append(category[0])
-print(categories_list)
+else:
+    page = 0
+
+keyword = None
+if keyword:
+    search = """
+        SELECT id FROM attractions 
+        WHERE (category = %s OR name LIKE %s)
+        LIMIT %s, 12
+        """
+    search_val = (keyword, "%"+keyword+"%", page*12)
+    cursor.execute(search, search_val)
+    attraction = cursor.fetchall()
+else:
+    search = "SELECT id FROM attractions LIMIT %s, 12"
+    search_page = (page*12,)
+    cursor.execute(search, search_page)
+    attractions = cursor.fetchall()
+
+print(attractions)
+print(len(attractions))

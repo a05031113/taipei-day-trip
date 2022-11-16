@@ -36,83 +36,60 @@ def api_attractions():
     output = {}
     data = []
     try:
-        # If keyword
-        if keyword:
-            search = """
-                SELECT * FROM attractions 
-                WHERE (category = %s OR name LIKE %s)
-                """
-            search_val = (keyword, "%"+keyword+"%")
-            cursor.execute(search, search_val)
-            attraction = cursor.fetchall()
-        else:
-            cursor.execute("SELECT * FROM attractions")
-            attraction = cursor.fetchall()
         # If page
         if page:
             page = int(page)
         else:
             page = 0
+        # if keyword
+        if keyword:
+            search = """
+                SELECT * FROM attractions 
+                WHERE (category = %s OR name LIKE %s)
+                LIMIT %s, 12
+                """
+            search_val = (keyword, "%"+keyword+"%", page*12)
+            cursor.execute(search, search_val)
+            attractions = cursor.fetchall()
+        else:
+            search = "SELECT * FROM attractions LIMIT %s, 12"
+            search_page = (page*12,)
+            cursor.execute(search, search_page)
+            attractions = cursor.fetchall()
         # set output dic and data list
         output = {}
         data = []
         # if having next page
-        if len(attraction) > page*12+12:
+        for attraction in attractions:
+            id = (attraction[0], )
+            select_image = """
+                SELECT image_url FROM images WHERE attraction_id = %s
+                """
+            cursor.execute(select_image, id)
+            images_url = cursor.fetchall()
+            images = []
+            for image_url in images_url:
+                images.append(image_url[0])
+            attraction_data = {}
+            attraction_data["id"] = attraction[0]
+            attraction_data["name"] = attraction[1]
+            attraction_data["category"] = attraction[2]
+            attraction_data["description"] = attraction[3]
+            attraction_data["address"] = attraction[4]
+            attraction_data["transport"] = attraction[5]
+            attraction_data["mrt"] = attraction[6]
+            attraction_data["lat"] = attraction[7]
+            attraction_data["lng"] = attraction[8]
+            attraction_data["image"] = images
+            data.append(attraction_data)
+        output["data"] = data
+        if len(attractions) == 12:
             output["nextPage"] = page+1
-            for i in range(page*12, page*12+12):
-                id = (attraction[i][0], )
-                select_image = """
-                    SELECT image_url FROM images WHERE attraction_id = %s
-                    """
-                cursor.execute(select_image, id)
-                images_url = cursor.fetchall()
-                images = []
-                for image_url in images_url:
-                    images.append(image_url[0])
-                attraction_data = {}
-                attraction_data["id"] = attraction[i][0]
-                attraction_data["name"] = attraction[i][1]
-                attraction_data["category"] = attraction[i][2]
-                attraction_data["description"] = attraction[i][3]
-                attraction_data["address"] = attraction[i][4]
-                attraction_data["transport"] = attraction[i][5]
-                attraction_data["mrt"] = attraction[i][6]
-                attraction_data["lat"] = attraction[i][7]
-                attraction_data["lng"] = attraction[i][8]
-                attraction_data["image"] = images
-                data.append(attraction_data)
-            output["data"] = data
-            return jsonify(output)
-        # if no having next page
-        elif len(attraction) > page*12:
+        elif len(attractions) < 12 and len(attractions) > 0:
             output["nextPage"] = None
-            for i in range(page*12, len(attraction)):
-                id = (attraction[i][0],)
-                select_image = """
-                    SELECT image_url FROM images WHERE attraction_id = %s
-                    """
-                cursor.execute(select_image, id)
-                images_url = cursor.fetchall()
-                images = []
-                for image_url in images_url:
-                    images.append(image_url[0])
-                attraction_data = {}
-                attraction_data["id"] = attraction[i][0]
-                attraction_data["name"] = attraction[i][1]
-                attraction_data["category"] = attraction[i][2]
-                attraction_data["description"] = attraction[i][3]
-                attraction_data["address"] = attraction[i][4]
-                attraction_data["transport"] = attraction[i][5]
-                attraction_data["mrt"] = attraction[i][6]
-                attraction_data["lat"] = attraction[i][7]
-                attraction_data["lng"] = attraction[i][8]
-                attraction_data["image"] = images
-                data.append(attraction_data)
-            output["data"] = data
-            return jsonify(output)
-        # nothing
         else:
-            return jsonify({"data": [], "nextPage": None})
+            output = {"data": [], "nextPage": None}
+        return jsonify(output)
     except:
         return jsonify({"error": True, "message": "Something wrong"}), 500
     finally:
