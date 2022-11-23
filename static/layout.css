@@ -25,6 +25,7 @@ body{
     font-size: 30px;
     color: #448899;
     line-height: 54px;
+    font-weight: 700;
 }
 .topRight{
     position: absolute;
@@ -69,10 +70,12 @@ body{
 .searchTitle{
     color: #f8f8f8;
     font-size: 28px;
+    font-weight: 700;
 }
 .searchComment{
     color: #f8f8f8;
     font-size: 16px;
+    font-weight: 700;
 }
 .searchHere{
     display: flex;
@@ -184,6 +187,7 @@ body{
 .attractionName{
     color: #FFFFFF;
     padding-left: 10px;
+    font-weight: 700;
 }
 .mrtAndCat{
     position: relative;
