@@ -1,71 +1,73 @@
 let searchSearchDiv = document.querySelector(".searchInput");
 let attractionsDiv = document.querySelector(".attractionsBox");
-
-async function getAttractions(url, page, keyword){
-    try {
-        if (keyword){
-            keyword = keyword;
-        }else{
-            keyword = null;
-        }
-        let response = await fetch(url);
-        let result = await response.json();
-        let attractionsData = result["data"];
-        let nextPage = result["nextPage"];
-        // add attraction's div
-        for (let i=0; i<attractionsData.length; i++){
-            addDiv("attrBox", "", attractionsDiv);
-        }
-        let attrBox = document.querySelectorAll(".attrBox");
-        for (let i=0; i<attractionsData.length; i++){
-            // add image, name
-            addImg("attractionImg", attractionsData[i]["image"][0], attrBox[page*12+i]);;
-            addDiv("attractionNameDiv", "", attrBox[page*12+i]);
-            // add mrt and categories div
-            addDiv("mrtAndCat", "", attrBox[page*12+i]);
-        }
-        let attractionNameDiv = document.querySelectorAll(".attractionNameDiv");
-        for (let i=0; i<attractionsData.length;i++){
-            addDiv("attractionName", attractionsData[i]["name"], attractionNameDiv[page*12+i]);
-        }
-        let divMrtAndCat = document.querySelectorAll(".mrtAndCat");
-        for (let i=0; i<attractionsData.length; i++){
-            // add mrt and category
-            addDiv("attractionMrt", attractionsData[i]["mrt"], divMrtAndCat[page*12+i]);
-            addDiv("attractionCat", attractionsData[i]["category"], divMrtAndCat[page*12+i]);
-        }
-        page++;
-        // check scroll to bottom and check if nextPage
-        window.onscroll = function() {
-            if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight) {
-                if (nextPage){
-                    if (keyword){
-                        url = "/api/attractions?page="+nextPage+"&keyword="+keyword;
-                        getAttractions(url, page, keyword);
-                    }else{
-                        url = "/api/attractions?page="+nextPage;
-                        getAttractions(url, page);
-                    }
-                } else {
-                    return false;
-                }
-            }
-        }
-    }catch(error){
-        console.log({"error": error});
-    }
-}
+let nextPage;
+let keyword;
 // index
 let url = "/api/attractions?page=0";
-getAttractions(url, 0);
+let page = 0;
+getAttractions(url);
 // search with keyword
-keyword = document.querySelector(".searchInput")
+keywordDiv = document.querySelector(".searchInput")
 let searchBtn = document.querySelector(".searchButton");
 searchBtn.onclick=function(){
-    url = "/api/attractions?page=0&keyword="+keyword.value;
+    url = "/api/attractions?page=0&keyword="+keywordDiv.value;
+    keyword = keywordDiv.value
     attractionsDiv.innerHTML="";
-    getAttractions(url, 0, keyword.value);
+    page = 0;
+    getAttractions(url);
 }
+// roll and roll and roll
+const listEnd = document.querySelector(".downLayout");
+const callback = (entries, observer) => {
+    for (const entry of entries) {
+        console.log(entry);
+        // Load more articles;
+        if (entry.isIntersecting) {
+            if (nextPage){
+                setTimeout(()=>{
+                    if (keyword){
+                        url = "/api/attractions?page="+nextPage+"&keyword="+keyword;
+                        getAttractions(url);
+                    }else{
+                        url = "/api/attractions?page="+nextPage;
+                        getAttractions(url);
+                    }
+                }, 300)
+            } else {
+                observer.observe(End);
+            }
+        }
+    }
+}
+// Observe the end of the list
+const observer = new IntersectionObserver(callback, {
+    threshold: 1,
+});
+observer.observe(listEnd);
+// const observer = new IntersectionObserver(function(entries, observer){
+//     entries.forEach(entry => {
+//         console.log("touch")
+        // setTimeout(()=>{
+        //     console.log("touch")
+            // if (nextPage){
+            //     console.log(page)
+            //     if (keyword){
+            //         url = "/api/attractions?page="+nextPage+"&keyword="+keyword;
+            //         getAttractions(url, page, keyword);
+            //     }else{
+            //         url = "/api/attractions?page="+nextPage;
+            //         getAttractions(url);
+            //     }
+            // } else {
+            //     observer.observe(End);
+            // }
+        // }, 1000)
+//     })
+// }, {
+//     "threshold": 1,
+// });
+// observer.observe(End);
+
 // categories bar
 let urlCat = "/api/categories";
 fetch(urlCat).then((res)=>{
@@ -94,9 +96,42 @@ window.onclick=function(){
         ghostSearch.style.display="none"
     }
 }
+async function getAttractions(url){
+    try {
+        let response = await fetch(url);
+        let result = await response.json();
+        let attractionsData = result["data"];
+        nextPage = result["nextPage"];
+        // add attraction's div
+        for (let i=0; i<attractionsData.length; i++){
+            addDiv("attrBox", "", attractionsDiv);
+        }
+        let attrBox = document.querySelectorAll(".attrBox");
+        for (let i=0; i<attractionsData.length; i++){
+            // add image, name
+            addImg("attractionImg", attractionsData[i]["image"][0], attrBox[page*12+i]);;
+            addDiv("attractionNameDiv", "", attrBox[page*12+i]);
+            // add mrt and categories div
+            addDiv("mrtAndCat", "", attrBox[page*12+i]);
+        }
+        let attractionNameDiv = document.querySelectorAll(".attractionNameDiv");
+        for (let i=0; i<attractionsData.length;i++){
+            addDiv("attractionName", attractionsData[i]["name"], attractionNameDiv[page*12+i]);
+        }
+        let divMrtAndCat = document.querySelectorAll(".mrtAndCat");
+        for (let i=0; i<attractionsData.length; i++){
+            // add mrt and category
+            addDiv("attractionMrt", attractionsData[i]["mrt"], divMrtAndCat[page*12+i]);
+            addDiv("attractionCat", attractionsData[i]["category"], divMrtAndCat[page*12+i]);
+        }
+        page++;
+    }catch(error){
+        console.log({"error": error});
+    }
+}
 // select category
 function chooseCat(element){
-    keyword.value = element.textContent
+    keywordDiv.value = element.textContent
 }
 // createElement function div and img
 function addDiv(className, insideContent, insert){
