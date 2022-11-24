@@ -1,4 +1,4 @@
-from function import connection
+from import_data.function import connection
 
 db = connection()
 cursor = db.cursor()
@@ -44,28 +44,36 @@ cursor = db.cursor()
 # categories = cursor.fetchall()
 # print(categories)
 # print(len(categories))
-page = 1
-if page > 0:
-    page = int(page)
+# page = 1
+# if page > 0:
+#     page = int(page)
 
-else:
-    page = 0
+# else:
+#     page = 0
 
-keyword = None
-if keyword:
-    search = """
-        SELECT id FROM attractions 
-        WHERE (category = %s OR name LIKE %s)
-        LIMIT %s, 12
-        """
-    search_val = (keyword, "%"+keyword+"%", page*12)
-    cursor.execute(search, search_val)
-    attraction = cursor.fetchall()
-else:
-    search = "SELECT id FROM attractions LIMIT %s, 12"
-    search_page = (page*12,)
-    cursor.execute(search, search_page)
-    attractions = cursor.fetchall()
+# keyword = None
+# if keyword:
+#     search = """
+#         SELECT id FROM attractions
+#         WHERE (category = %s OR name LIKE %s)
+#         LIMIT %s, 12
+#         """
+#     search_val = (keyword, "%"+keyword+"%", page*12)
+#     cursor.execute(search, search_val)
+#     attraction = cursor.fetchall()
+# else:
+#     search = "SELECT id FROM attractions LIMIT %s, 12"
+#     search_page = (page*12,)
+#     cursor.execute(search, search_page)
+#     attractions = cursor.fetchall()
+select_image = """
+    SELECT GROUP_CONCAT(image_url) FROM images WHERE attraction_id = %s
+    """
+id = (2, )
+cursor.execute(select_image, id)
+images = cursor.fetchall()
+# images = []
+# for image_url in images:
+#     print(image_url[0])
 
-print(attractions)
-print(len(attractions))
+print(images[0][0])

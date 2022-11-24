@@ -1,6 +1,6 @@
 import json
 import mysql.connector as connector
-from test_sql import test
+from Password import test
 
 with open("taipei-attractions.json", newline="") as file:
     data = json.load(file)
