@@ -41,7 +41,7 @@ const callback = (entries, observer) => {
                 }
             }
         } else {
-            observer.observe(listEnd);
+            return false;
         }
     }
 }
