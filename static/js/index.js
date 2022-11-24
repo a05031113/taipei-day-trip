@@ -30,8 +30,8 @@ const callback = (entries, observer) => {
     for (const entry of entries) {
         // console.log(entry);
         // Load more articles;
-        if (entry.isIntersecting) {
-            if (nextPage){
+        if (nextPage){
+            if (entry.isIntersecting) {
                 if (keyword){
                     url = "/api/attractions?page="+nextPage+"&keyword="+keyword;
                     getAttractions(url);
@@ -39,9 +39,9 @@ const callback = (entries, observer) => {
                     url = "/api/attractions?page="+nextPage;
                     getAttractions(url);
                 }
-            } else {
-                observer.observe(listEnd);
             }
+        } else {
+            observer.observe(listEnd);
         }
     }
 }
