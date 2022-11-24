@@ -30,13 +30,15 @@ const callback = (entries, observer) => {
     for (const entry of entries) {
         // console.log(entry);
         // Load more articles;
-        if (nextPage){
+        if (nextPage===page+1){
             if (entry.isIntersecting) {
                 if (keyword){
                     url = "/api/attractions?page="+nextPage+"&keyword="+keyword;
+                    page++;
                     getAttractions(url);
                 }else{
                     url = "/api/attractions?page="+nextPage;
+                    page++;
                     getAttractions(url);
                 }
             }
@@ -113,7 +115,6 @@ async function getAttractions(url){
                 addDiv("attractionMrt", attractionsData[i]["mrt"], divMrtAndCat[page*12+i]);
                 addDiv("attractionCat", attractionsData[i]["category"], divMrtAndCat[page*12+i]);
             }
-            page++;
         }else{
             attractionsData = null;
         }
