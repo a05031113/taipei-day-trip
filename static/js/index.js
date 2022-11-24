@@ -5,6 +5,7 @@ let keyword;
 // index
 let url = "/api/attractions?page=0";
 let page = 0;
+let attractionsData;
 getAttractions(url);
 // search with keyword
 keywordDiv = document.querySelector(".searchInput")
@@ -15,12 +16,19 @@ searchBtn.onclick=function(){
     attractionsDiv.innerHTML="";
     page = 0;
     getAttractions(url);
+    categoriesDiv.style.display="none";
+    ghostSearch.style.display="none"
+    setTimeout(()=>{
+        if (attractionsData === null){
+            addDiv("noData", "Here is no data", attractionsDiv)
+        }
+    }, 300)
 }
 // roll and roll and roll
-const listEnd = document.querySelector(".downLayout");
+const listEnd = document.querySelector(".footer");
 const callback = (entries, observer) => {
     for (const entry of entries) {
-        console.log(entry);
+        // console.log(entry);
         // Load more articles;
         if (entry.isIntersecting) {
             if (nextPage){
@@ -34,7 +42,7 @@ const callback = (entries, observer) => {
                     }
                 }, 300)
             } else {
-                observer.observe(End);
+                observer.observe(listEnd);
             }
         }
     }
@@ -44,29 +52,6 @@ const observer = new IntersectionObserver(callback, {
     threshold: 1,
 });
 observer.observe(listEnd);
-// const observer = new IntersectionObserver(function(entries, observer){
-//     entries.forEach(entry => {
-//         console.log("touch")
-        // setTimeout(()=>{
-        //     console.log("touch")
-            // if (nextPage){
-            //     console.log(page)
-            //     if (keyword){
-            //         url = "/api/attractions?page="+nextPage+"&keyword="+keyword;
-            //         getAttractions(url, page, keyword);
-            //     }else{
-            //         url = "/api/attractions?page="+nextPage;
-            //         getAttractions(url);
-            //     }
-            // } else {
-            //     observer.observe(End);
-            // }
-        // }, 1000)
-//     })
-// }, {
-//     "threshold": 1,
-// });
-// observer.observe(End);
 
 // categories bar
 let urlCat = "/api/categories";
@@ -86,52 +71,65 @@ fetch(urlCat).then((res)=>{
 // hide and seed
 let categoriesDiv = document.querySelector(".categories");
 let ghostSearch = document.querySelector(".ghostSearch");
+let searchInput = document.querySelector(".searchInput");
 searchSearchDiv.onclick=function(){
     ghostSearch.style.display="block";
     categoriesDiv.style.display="flex";
+    searchInput.style.zIndex="2";
+    searchBtn.style.zIndex="2"
 }
 window.onclick=function(){
     if (event.target===ghostSearch){
         categoriesDiv.style.display="none";
         ghostSearch.style.display="none"
+        searchInput.style.zIndex="1";
+        searchBtn.style.zIndex="1"
     }
 }
 async function getAttractions(url){
     try {
         let response = await fetch(url);
-        let result = await response.json();
-        let attractionsData = result["data"];
-        nextPage = result["nextPage"];
-        // add attraction's div
-        for (let i=0; i<attractionsData.length; i++){
-            addDiv("attrBox", "", attractionsDiv);
+        if (response.status === 200) {
+            let result = await response.json();
+            attractionsData = result["data"];
+            nextPage = result["nextPage"];
+            // add attraction's div
+            for (let i=0; i<attractionsData.length; i++){
+                addDiv("attrBox", "", attractionsDiv);
+            }
+            let attrBox = document.querySelectorAll(".attrBox");
+            for (let i=0; i<attractionsData.length; i++){
+                // add image, name
+                addImg("attractionImg", attractionsData[i]["image"][0], attrBox[page*12+i]);;
+                addDiv("attractionNameDiv", "", attrBox[page*12+i]);
+                // add mrt and categories div
+                addDiv("mrtAndCat", "", attrBox[page*12+i]);
+            }
+            let attractionNameDiv = document.querySelectorAll(".attractionNameDiv");
+            for (let i=0; i<attractionsData.length;i++){
+                addDiv("attractionName", attractionsData[i]["name"], attractionNameDiv[page*12+i]);
+            }
+            let divMrtAndCat = document.querySelectorAll(".mrtAndCat");
+            for (let i=0; i<attractionsData.length; i++){
+                // add mrt and category
+                addDiv("attractionMrt", attractionsData[i]["mrt"], divMrtAndCat[page*12+i]);
+                addDiv("attractionCat", attractionsData[i]["category"], divMrtAndCat[page*12+i]);
+            }
+            page++;
+        }else{
+            attractionsData = null;
         }
-        let attrBox = document.querySelectorAll(".attrBox");
-        for (let i=0; i<attractionsData.length; i++){
-            // add image, name
-            addImg("attractionImg", attractionsData[i]["image"][0], attrBox[page*12+i]);;
-            addDiv("attractionNameDiv", "", attrBox[page*12+i]);
-            // add mrt and categories div
-            addDiv("mrtAndCat", "", attrBox[page*12+i]);
-        }
-        let attractionNameDiv = document.querySelectorAll(".attractionNameDiv");
-        for (let i=0; i<attractionsData.length;i++){
-            addDiv("attractionName", attractionsData[i]["name"], attractionNameDiv[page*12+i]);
-        }
-        let divMrtAndCat = document.querySelectorAll(".mrtAndCat");
-        for (let i=0; i<attractionsData.length; i++){
-            // add mrt and category
-            addDiv("attractionMrt", attractionsData[i]["mrt"], divMrtAndCat[page*12+i]);
-            addDiv("attractionCat", attractionsData[i]["category"], divMrtAndCat[page*12+i]);
-        }
-        page++;
     }catch(error){
         console.log({"error": error});
     }
 }
 // select category
 function chooseCat(element){
-    keywordDiv.value = element.textContent
+    keywordDiv.value = element.textContent;
+    categoriesDiv.style.display="none";
+    ghostSearch.style.display="none"
+    searchInput.style.zIndex="1";
+    searchBtn.style.zIndex="1"
 }
 // createElement function div and img
 function addDiv(className, insideContent, insert){
