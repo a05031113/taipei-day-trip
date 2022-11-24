@@ -16,7 +16,7 @@ def api_attractions():
         if page:
             page = int(page)
         else:
-            page = 0
+            return jsonify({"error": True, "message": "no page"}), 500
         # if keyword
         if keyword:
             search = """

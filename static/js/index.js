@@ -12,17 +12,21 @@ keywordDiv = document.querySelector(".searchInput")
 let searchBtn = document.querySelector(".searchButton");
 searchBtn.onclick=function(){
     url = "/api/attractions?page=0&keyword="+keywordDiv.value;
-    keyword = keywordDiv.value
-    attractionsDiv.innerHTML="";
-    page = 0;
-    getAttractions(url);
-    categoriesDiv.style.display="none";
-    ghostSearch.style.display="none"
-    setTimeout(()=>{
-        if (attractionsData === null){
-            addDiv("noData", "Here is no data", attractionsDiv)
-        }
-    }, 300)
+    keyword = keywordDiv.value.trim();
+    if (keyword.length===0){
+        return false;
+    }else{
+        attractionsDiv.innerHTML="";
+        page = 0;
+        getAttractions(url);
+        categoriesDiv.style.display="none";
+        ghostSearch.style.display="none"
+        setTimeout(()=>{
+            if (attractionsData === null){
+                addDiv("noData", "Here is no data", attractionsDiv)
+            }
+        }, 300)
+    }
 }
 // roll and roll and roll
 const listEnd = document.querySelector(".footer");
