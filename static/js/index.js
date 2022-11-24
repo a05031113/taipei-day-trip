@@ -32,15 +32,13 @@ const callback = (entries, observer) => {
         // Load more articles;
         if (entry.isIntersecting) {
             if (nextPage){
-                setTimeout(()=>{
-                    if (keyword){
-                        url = "/api/attractions?page="+nextPage+"&keyword="+keyword;
-                        getAttractions(url);
-                    }else{
-                        url = "/api/attractions?page="+nextPage;
-                        getAttractions(url);
-                    }
-                }, 300)
+                if (keyword){
+                    url = "/api/attractions?page="+nextPage+"&keyword="+keyword;
+                    getAttractions(url);
+                }else{
+                    url = "/api/attractions?page="+nextPage;
+                    getAttractions(url);
+                }
             } else {
                 observer.observe(listEnd);
             }
