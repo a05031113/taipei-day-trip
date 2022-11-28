@@ -401,7 +401,7 @@ footer{
     position: relative;
     width: 100%;
     height: 315px;
-    min-height: 320px;
+    min-height: 300px;
     background: #E8E8E8;
     border-radius: 5px;
     margin-top: 5px;
@@ -537,9 +537,6 @@ footer{
         width: calc(100% - 20px);
         margin-left: 10px;
         margin-right: 10px;
-    }
-    .attractionBooking{
-        height: auto;
     }
     .bookingContent{
         margin-right: 15px;
