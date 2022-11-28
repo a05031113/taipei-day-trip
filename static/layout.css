@@ -41,6 +41,142 @@ footer{
     width: 100%;
     top: 54px;
 }
+.leaveBox{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 40px;
+}
+.loginLeave{
+    position: absolute;
+    right: 17px;
+    top: 27px;
+    cursor: pointer;
+}
+.registerLeave{
+    position: absolute;
+    right: 17px;
+    top: 27px;
+    cursor: pointer;
+}
+.register{
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 7; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    justify-content: center;
+}
+.registerBox{
+    position: relative;
+    margin-top: 80px;
+    width: 340px;
+    height: 332px;
+    border-radius: 5px;
+    background-color: #FFFFFF;
+}
+.login{
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 7; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    justify-content: center;
+}
+.loginBox{
+    position: relative;
+    margin-top: 80px;
+    width: 340px;
+    height: 275px;
+    border-radius: 5px;
+    background-color: #FFFFFF;
+}
+.loginHeader{
+    left: 0px;
+    top: 0px;
+    position: relative;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    height: 10px;
+    width: 100%;
+    background: linear-gradient(270deg, #337788 0%, #66AABB 100%);    
+    z-index: 8;
+}
+.loginTitle{
+    margin: 15px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #666666;
+    height: 27px;
+    line-height: 27px;
+}
+.loginEmail{
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 15px;
+    width: calc(100% - 62px);
+    height: 13px;
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+    padding: 15px;
+}
+.loginPassword{
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 15px;
+    width: calc(100% - 62px);
+    height: 13px;
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+    padding: 15px;
+}
+.loginBtn{
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 10px;
+    border: none;
+    background-color: #448899;
+    color: #FFFFFF;
+    border-radius: 5px;
+    text-align: center;
+    width: calc(100% - 30px);
+    height: 47px;
+    cursor: pointer;
+}
+.loginBtn:hover{
+    transform: scale(1.05);
+}
+.loginBtn:active{
+    transform: scale(1);
+}
+.registerNow{
+    text-align: center;
+    font-weight: 500;
+    color: #666666;
+    height: 22px;
+    line-height: 22px;
+    cursor: pointer;
+}
+.loginNow{
+    text-align: center;
+    font-weight: 500;
+    color: #666666;
+    height: 22px;
+    line-height: 22px;
+    cursor: pointer;
+}
 .top {
     position: relative;
     display: flex;
@@ -85,7 +221,7 @@ footer{
     -webkit-user-select: none;
     -ms-user-select: none;
 }
-.login{
+.getRegisterLogin{
     display: inline;
     margin-left: 20px;
     margin-right: 10px;
@@ -104,6 +240,7 @@ footer{
     position: relative;
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 .welcomeImg{
     width: 100%;
@@ -114,7 +251,6 @@ footer{
 }
 .searchBox{
     margin-left: 10px;
-    top: 81px;
     width: 1200px;
     position: absolute;
 }
@@ -213,7 +349,6 @@ footer{
     width: 1200px;
     margin-top: 30px;
     margin-bottom: 30px;
-    flex: 1;
 }
 .indexAttrBox{
     width: 270px;
@@ -260,6 +395,9 @@ footer{
     padding-left: 10px;
     font-weight: 700;
     vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .indexMrtAndCat{
     position: relative;
@@ -336,6 +474,7 @@ footer{
     opacity: 0.6;
 }
 .imgArrow{
+    z-index: 1;
     position: absolute;
     height: 100%;
     width: 100%;
