@@ -634,11 +634,14 @@ footer{
 }
 .attractionBottom{
     position: relative;
-    margin-top: 40px;
+    margin-top: 50px;
     margin-bottom: 40px;
     font-weight: 400;
     font-size: 16px;
     color: #666666;
+}
+.attractionDescription{
+    line-height: 23px;
 }
 .AddressTitle{
     font-weight: 700;
@@ -651,6 +654,9 @@ footer{
     height: 32px;
     line-height: 32px;
     margin-top: 20px;
+}
+.attractionTransport{
+    line-height: 23px;
 }
 /* RWD */
 @media (max-width:1199px) {
