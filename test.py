@@ -66,14 +66,12 @@ cursor = db.cursor()
 #     search_page = (page*12,)
 #     cursor.execute(search, search_page)
 #     attractions = cursor.fetchall()
-select_image = """
-    SELECT GROUP_CONCAT(image_url) FROM images WHERE attraction_id = %s
-    """
-id = (2, )
-cursor.execute(select_image, id)
-images = cursor.fetchall()
+select_id = "SELECT name FROM attractions WHERE id = %s"
+get_name = (2, )
+cursor.execute(select_id, get_name)
+name = cursor.fetchone()[0]
 # images = []
 # for image_url in images:
 #     print(image_url[0])
 
-print(images[0][0])
+print(name)

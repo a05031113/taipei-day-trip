@@ -27,6 +27,8 @@ def api_attractions():
             search_val = (keyword, "%"+keyword+"%", page*12)
             cursor.execute(search, search_val)
             attractions = cursor.fetchall()
+            if len(attractions) == 0:
+                return jsonify({"nextPage": None, "data": None})
         else:
             search = "SELECT * FROM attractions LIMIT %s, 13"
             search_page = (page*12,)
