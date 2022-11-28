@@ -533,8 +533,13 @@ footer{
     .attractionTop{
         height: auto;
     }
+    .attractionTopLeft{
+        width: calc(50% - 20px);
+        margin-left: 10px;
+        margin-right: 10px;
+    }
     .attractionTopRight{
-        width: calc(100% - 20px);
+        width: calc(50% - 20px);
         margin-left: 10px;
         margin-right: 10px;
     }
@@ -571,6 +576,9 @@ footer{
         margin-right: 0px;
         margin-bottom: 20px;
         width: 100%;
+    }
+    .attractionTopRight{
+        width: calc(100% - 20px);
     }
     .attractionBooking{
         min-height: 300px;
