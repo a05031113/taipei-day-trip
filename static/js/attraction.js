@@ -13,21 +13,28 @@ let chooseMorning;
 let chooseAfternoon;
 let chooseDate;
 let fee;
+let imgRadio
 
 function rightPic(){
-    imageIndex = image.indexOf(attractionImage.src)
+    imageIndex = image.indexOf(attractionImage.src);
+    imgRadio[imageIndex].checked = false;
     if (imageIndex===image.length-1){
-        attractionImage.src = image[0]
+        attractionImage.src = image[0];
+        imgRadio[0].checked = true;
     }else{
-        attractionImage.src = image[imageIndex + 1]
+        attractionImage.src = image[imageIndex + 1];
+        imgRadio[imageIndex+1].checked = true;
     }
 }
 function leftPic(){
     imageIndex = image.indexOf(attractionImage.src)
+    imgRadio[imageIndex].checked = false;
     if (imageIndex===0){
         attractionImage.src = image[image.length - 1]
+        imgRadio[image.length-1].checked = true;
     }else{
         attractionImage.src = image[imageIndex - 1]
+        imgRadio[imageIndex-1].checked = true;
     }
 }
 function selectMorning(){
@@ -85,13 +92,30 @@ fetch(url).then((res)=>{
     address = data["address"];
     transport = data["transport"];
 
+    function imgInput(){
+        let inputRadio = "<input type='radio' class='radio'/>";
+        for (let i=0; i<image.length-1; i++){
+            inputRadio = inputRadio + "<input type='radio' class='radio'/>";
+        }
+        return inputRadio;
+    }
+
     const html =`
         <div class="attractionBoxInside">
             <div class="attractionTop">
                 <div class="attractionTopLeft">
                     <img class="attractionImage" src=${image[0]} alt=""/>
-                    <img class="leftArrow" src="/static/image/btn_leftArrow.png" onclick="leftPic()"/>
-                    <img class="rightArrow" src="/static/image/btn_rightArrow.png" onclick="rightPic()"/>
+                    <div class="imgArrow">
+                        <div class="arrow">
+                            <img class="leftArrow" src="/static/image/btn_leftArrow.png" onclick="leftPic()"/>
+                            <img class="rightArrow" src="/static/image/btn_rightArrow.png" onclick="rightPic()"/>
+                        </div>
+                    </div>
+                    <div class="imgRadio">
+                        <div class="radioInput">
+                            ${imgInput()}
+                        </div>
+                    </div>
                 </div>
                 <div class="attractionTopRight">
                     <div class="attractionName">${Name}</div>
@@ -133,9 +157,14 @@ fetch(url).then((res)=>{
         </div>
     `
     attractionBox.insertAdjacentHTML('beforeend', html);
+    
     attractionImage = document.querySelector(".attractionImage"); 
     chooseDate = document.querySelector(".chooseDate");
     chooseMorning = document.querySelector(".chooseMorning");
     chooseAfternoon = document.querySelector(".chooseAfternoon");
     fee = document.querySelector(".fee");
+    imgRadio = document.querySelectorAll(".radio");
+    imgRadio[0].checked = true;
 })
+
+
