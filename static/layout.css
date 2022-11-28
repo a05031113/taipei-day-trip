@@ -458,6 +458,7 @@ footer{
     width: 22px;
     height: 22px;
     border-style: none;
+    accent-color: #448899;
 }
 .chooseAfternoon{
     margin-left: 18px;
@@ -465,6 +466,7 @@ footer{
     width: 22px;
     height: 22px;
     border-style: none;
+    accent-color: #448899;
 }
 .bookingFee{
     margin-top: 15px;
