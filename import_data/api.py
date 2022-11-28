@@ -16,7 +16,7 @@ def api_attractions():
         if page:
             page = int(page)
         else:
-            page = 0
+            return jsonify({"error": True, "message": "no page"}), 500
         # if keyword
         if keyword:
             search = """
@@ -27,6 +27,8 @@ def api_attractions():
             search_val = (keyword, "%"+keyword+"%", page*12)
             cursor.execute(search, search_val)
             attractions = cursor.fetchall()
+            if len(attractions) == 0:
+                return jsonify({"nextPage": None, "data": None})
         else:
             search = "SELECT * FROM attractions LIMIT %s, 13"
             search_page = (page*12,)

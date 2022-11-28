@@ -33,4 +33,6 @@ def image_url(cursor, id):
     cursor.execute(select_image, id)
     images = cursor.fetchall()
     images = images[0][0].split(",")
+    if len(images) > 7:
+        images.pop()
     return images

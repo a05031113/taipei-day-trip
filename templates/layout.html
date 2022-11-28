@@ -19,7 +19,7 @@
             </div>
             <div class="topRight">
                 <div class="project">預定行程</div>
-                <div class="login">登入/註冊</div>    
+                <div class="getRegisterLogin">登入/註冊</div>    
             </div>
         </div>
     </nav>
@@ -28,10 +28,42 @@
     {% else %}
 
     {% endif %}-->
+    <div class="login">
+        <div class="loginBox">
+            <form>
+                <div class="loginHeader"></div>
+                <div class="loginTitle">登入會員帳號</div>
+                <input class="loginEmail" type="text" placeholder="請輸入電子信箱" name="loginEmail"/>
+                <input class="loginPassword" type="password" placeholder="輸入密碼" name="loginPassword"/>
+                <button class="loginBtn">登入帳號</button>
+                <div class="registerNow">還沒有帳戶？點此註冊</div>
+                <div class="leaveBox">
+                    <img class="loginLeave" src="/static/image/icon_close.png" alt="">
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="register">
+        <div class="registerBox">
+            <form>
+                <div class="loginHeader"></div>
+                <div class="loginTitle">登入會員帳號</div>
+                <input class="loginEmail" type="text" placeholder="輸入姓名" name="registerName"/>
+                <input class="loginEmail" type="text" placeholder="請輸入電子信箱" name="registerEmail"/>
+                <input class="loginPassword" type="password" placeholder="輸入密碼" name="registerPassword"/>
+                <button class="loginBtn">登入帳號</button>
+                <div class="loginNow">還沒有帳戶？點此註冊</div>
+                <div class="leaveBox">
+                    <img class="registerLeave" src="/static/image/icon_close.png" alt="">
+                </div>
+            </form>
+        </div>
+    </div>
     <main>
         {% block main %}{% endblock %}
-    </main> 
-    <footer class="footer">
+    </main>
+    <footer>
         <div class="copyright">COPYRIGHT © 2021 台北一日遊</div>
     </footer>
+    <script src="/static/js/layout.js"></script>
 </body>

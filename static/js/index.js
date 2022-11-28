@@ -1,7 +1,8 @@
 let searchSearchDiv = document.querySelector(".searchInput");
-let attractionsDiv = document.querySelector(".attractionsBox");
+let attractionsDiv = document.querySelector(".indexAttractionsBox");
 let nextPage;
 let keyword;
+let isLoading = false;
 // index
 let url = "/api/attractions?page=0";
 let page = 0;
@@ -9,36 +10,39 @@ let attractionsData;
 getAttractions(url);
 // search with keyword
 keywordDiv = document.querySelector(".searchInput")
+body = document.querySelector("body")
 let searchBtn = document.querySelector(".searchButton");
 searchBtn.onclick=function(){
-    url = "/api/attractions?page=0&keyword="+keywordDiv.value;
-    keyword = keywordDiv.value
-    attractionsDiv.innerHTML="";
-    page = 0;
-    getAttractions(url);
-    categoriesDiv.style.display="none";
-    ghostSearch.style.display="none"
-    setTimeout(()=>{
-        if (attractionsData === null){
-            addDiv("noData", "Here is no data", attractionsDiv)
+    if (!isLoading){
+        url = "/api/attractions?page=0&keyword="+keywordDiv.value;
+        keyword = keywordDiv.value.trim();
+        if (keyword.length===0){
+            return false;
+        }else{
+            page = 0;
+            attractionsDiv.innerHTML="";
+            isLoading = true;
+            getAttractions(url);
+            categoriesDiv.style.display="none";
+            ghostSearch.style.display="none";
         }
-    }, 300)
+    }else{
+        return false;
+    }
 }
 // roll and roll and roll
-const listEnd = document.querySelector(".footer");
+const listEnd = document.querySelector("footer");
 const callback = (entries, observer) => {
     for (const entry of entries) {
-        // console.log(entry);
-        // Load more articles;
-        if (nextPage===page+1){
+        if (nextPage===page && !isLoading){
             if (entry.isIntersecting) {
                 if (keyword){
+                    isLoading = true;
                     url = "/api/attractions?page="+nextPage+"&keyword="+keyword;
-                    page++;
                     getAttractions(url);
                 }else{
+                    isLoading = true;
                     url = "/api/attractions?page="+nextPage;
-                    page++;
                     getAttractions(url);
                 }
             }
@@ -52,7 +56,6 @@ const observer = new IntersectionObserver(callback, {
     threshold: 1,
 });
 observer.observe(listEnd);
-
 // categories bar
 let urlCat = "/api/categories";
 fetch(urlCat).then((res)=>{
@@ -60,12 +63,7 @@ fetch(urlCat).then((res)=>{
 }).then((result)=>{
     let categoriesData = result["data"];
     for (let i=0; i<categoriesData.length;i++){
-        const categories = document.createElement("div");
-        categories.className = "searchCategories";
-        categories.setAttribute("onclick", "chooseCat(this)");
-        const text = document.createTextNode(categoriesData[i]);
-        categories.appendChild(text);
-        categoriesDiv.appendChild(categories);
+        addDiv("searchCategories", categoriesData[i], categoriesDiv, "chooseCat(this)")
     }
 })
 // hide and seed
@@ -89,34 +87,39 @@ window.onclick=function(){
 async function getAttractions(url){
     try {
         let response = await fetch(url);
-        if (response.status === 200) {
-            let result = await response.json();
-            attractionsData = result["data"];
+        let result = await response.json();
+        attractionsData = result["data"];
+        if (attractionsData){
             nextPage = result["nextPage"];
             // add attraction's div
             for (let i=0; i<attractionsData.length; i++){
-                addDiv("attrBox", "", attractionsDiv);
+                addDiv("indexAttrBox", "", attractionsDiv, "selectAttraction(this)");
             }
-            let attrBox = document.querySelectorAll(".attrBox");
+            let attrBox = document.querySelectorAll(".indexAttrBox");
             for (let i=0; i<attractionsData.length; i++){
                 // add image, name
-                addImg("attractionImg", attractionsData[i]["image"][0], attrBox[page*12+i]);;
-                addDiv("attractionNameDiv", "", attrBox[page*12+i]);
+                addDiv("indexAttractionId", attractionsData[i]["id"]+".", attrBox[page*12+i])
+                addImg("indexAttractionImg", attractionsData[i]["image"][0], attrBox[page*12+i]);;
+                addDiv("indexAttractionNameDiv", "", attrBox[page*12+i]);
                 // add mrt and categories div
-                addDiv("mrtAndCat", "", attrBox[page*12+i]);
+                addDiv("indexMrtAndCat", "", attrBox[page*12+i]);
             }
-            let attractionNameDiv = document.querySelectorAll(".attractionNameDiv");
+            let attractionNameDiv = document.querySelectorAll(".indexAttractionNameDiv");
             for (let i=0; i<attractionsData.length;i++){
-                addDiv("attractionName", attractionsData[i]["name"], attractionNameDiv[page*12+i]);
+                addDiv("indexAttractionName", attractionsData[i]["name"], attractionNameDiv[page*12+i]);
             }
-            let divMrtAndCat = document.querySelectorAll(".mrtAndCat");
+            let divMrtAndCat = document.querySelectorAll(".indexMrtAndCat");
             for (let i=0; i<attractionsData.length; i++){
                 // add mrt and category
-                addDiv("attractionMrt", attractionsData[i]["mrt"], divMrtAndCat[page*12+i]);
-                addDiv("attractionCat", attractionsData[i]["category"], divMrtAndCat[page*12+i]);
+                addDiv("indexAttractionMrt", attractionsData[i]["mrt"], divMrtAndCat[page*12+i]);
+                addDiv("indexAttractionCat", attractionsData[i]["category"], divMrtAndCat[page*12+i]);
             }
+            isLoading = false;
+            page++;
         }else{
-            attractionsData = null;
+            attractionsDiv.innerHTML="";
+            addDiv("noData", "Here is no data", attractionsDiv);
+            isLoading = false;
         }
     }catch(error){
         console.log({"error": error});
@@ -130,10 +133,17 @@ function chooseCat(element){
     searchInput.style.zIndex="1";
     searchBtn.style.zIndex="1"
 }
+function selectAttraction(element){
+    const id = element.textContent.split(".")[0];
+    document.location.href = "/attraction/" + id;
+}
 // createElement function div and img
-function addDiv(className, insideContent, insert){
+function addDiv(className, insideContent, insert, direction){
     const addDiv = document.createElement("div");
     addDiv.className = className;
+    if (direction){
+        addDiv.setAttribute("onclick", direction);
+    }
     const text = document.createTextNode(insideContent);
     addDiv.appendChild(text);
     insert.appendChild(addDiv);
@@ -144,3 +154,4 @@ function addImg(className, imgUrl, insert){
     attractionImg.src = imgUrl;
     insert.appendChild(attractionImg);
 }
+
