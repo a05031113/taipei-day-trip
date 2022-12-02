@@ -67,7 +67,6 @@ def api_user_auth():
             data = request.get_json()
             email = data["email"]
             password = data["password"]
-            print("check")
             db = connection()
             cursor = db.cursor()
             check_password = "SELECT password, id, name, email FROM members WHERE email = %s"
