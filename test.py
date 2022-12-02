@@ -1,17 +1,21 @@
-from import_data.function import connection
+from static.py.function import *
 
 db = connection()
 cursor = db.cursor()
 
-select_image = """
-    SELECT GROUP_CONCAT(image_url) FROM images WHERE attraction_id = %s
-    """
-id = (11, )
-cursor.execute(select_image, id)
-images = cursor.fetchall()
-# images = images[0][0].split(",")
-# images = []
-# for image_url in images:
-#     print(image_url[0])
+# check_password = "SELECT password, id FROM members WHERE email = %s"
+# check_value = ("a05031113@gmail.com", )
+# cursor.execute(check_password, check_value)
+# account = cursor.fetchone()
+# # images = images[0][0].split(",")
+# # images = []
+# # for image_url in images:
+# #     print(image_url[0])
 
-print(images)
+# print(account[1])
+email = "a05031113@@gma.il.com"
+
+if email_valid(email) == False:
+    print("falsw")
+else:
+    print("true")

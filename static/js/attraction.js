@@ -13,7 +13,7 @@ let chooseMorning;
 let chooseAfternoon;
 let chooseDate;
 let fee;
-let imgRadio
+let imgRadio;
 
 function rightPic(){
     imageIndex = image.indexOf(attractionImage.src);
@@ -91,7 +91,7 @@ fetch(url).then((res)=>{
     description = data["description"];
     address = data["address"];
     transport = data["transport"];
-
+    document.title = Name;
     function imgInput(){
         let inputRadio = "<input type='radio' class='radio'/>";
         for (let i=0; i<image.length-1; i++){

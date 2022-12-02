@@ -1,3 +1,6 @@
+import re
+
+
 def connection():
     import mysql.connector as connector
     db = connector.connect(
@@ -36,3 +39,21 @@ def image_url(cursor, id):
     if len(images) > 7:
         images.pop()
     return images
+
+
+def email_valid(email):
+    email_regex = re.compile(
+        r'^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$')
+    if re.fullmatch(email_regex, email):
+        return True
+    else:
+        return False
+
+
+def password_valid(password):
+    password_regex = re.compile(
+        r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$')
+    if re.fullmatch(password_regex, password):
+        return True
+    else:
+        return False

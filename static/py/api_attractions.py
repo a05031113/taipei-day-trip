@@ -1,9 +1,9 @@
 from flask import *
-from import_data.function import *
-api = Blueprint('api', __name__)
+from static.py.function import *
+api_attr = Blueprint('api_attr', __name__)
 
 
-@api.route("/api/attractions")
+@api_attr.route("/api/attractions")
 def api_attractions():
     page = request.args.get("page")
     keyword = request.args.get("keyword")
@@ -55,14 +55,14 @@ def api_attractions():
         output["data"] = data
         return jsonify(output)
     except:
-        return jsonify({"error": True, "message": "Something wrong"}), 500
+        return jsonify({"error": True, "message": SyntaxError}), 500
     finally:
         if db.is_connected():
             cursor.close()
             db.close()
 
 
-@api.route("/api/attractions/<id>")
+@api_attr.route("/api/attractions/<id>")
 def api_attractions_id(id):
     try:
         db = connection()
@@ -88,28 +88,7 @@ def api_attractions_id(id):
         else:
             return jsonify({"error": True, "message": "No id"}), 400
     except:
-        return jsonify({"error": True, "message": "Something wrong"}), 500
-    finally:
-        if db.is_connected():
-            cursor.close()
-            db.close()
-
-
-@api.route("/api/categories")
-def api_categories():
-    db = connection()
-    cursor = db.cursor()
-    try:
-        output = {}
-        cursor.execute("SELECT DISTINCT category FROM attractions")
-        categories = cursor.fetchall()
-        categories_list = []
-        for category in categories:
-            categories_list.append(category[0])
-        output["data"] = categories_list
-        return jsonify(output)
-    except:
-        return jsonify({"error": True, "message": "Something wrong"}), 500
+        return jsonify({"error": True, "message": SyntaxError}), 500
     finally:
         if db.is_connected():
             cursor.close()
