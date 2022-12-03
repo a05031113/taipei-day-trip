@@ -88,6 +88,7 @@ async function loginAccount(data){
         let result = await response.json();
         if (response.status===200){
             console.log(result)
+            localStorage.setItem('JWT', result.access_token);
             // window.location.reload();
         }else if(response.status===400){
             alert(result["message"]);

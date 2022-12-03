@@ -13,8 +13,8 @@ def refresh():
     identity = get_jwt_identity()
     access_token = create_access_token(
         identity=identity, fresh=timedelta(minutes=5))
-    set_access_cookies(response, access_token)
-    return response, 200
+    # set_access_cookies(response, access_token)
+    return jsonify(access_token=access_token), 200
 
 
 @api_users.route("/api/user", methods=["POST"])
@@ -56,6 +56,13 @@ def api_user():
             db.close()
 
 
+@api_users.route("/test")
+@jwt_required()
+def test():
+    data = get_jwt()
+    return jsonify(data["sub"]), 200
+
+
 @api_users.route("/api/user/auth", methods=["GET", "PUT", "DELETE"])
 def api_user_auth():
     if request.method == "GET":
@@ -79,9 +86,7 @@ def api_user_auth():
                 response = jsonify({"login": True})
                 access_token = create_access_token(identity=identity)
                 refresh_token = create_refresh_token(identity=identity)
-                set_access_cookies(response, access_token)
-                set_refresh_cookies(response, refresh_token)
-                return response, 200
+                return jsonify(access_token=access_token, refresh_token=refresh_token), 200
             else:
                 return jsonify({"error": True, "message": "Wrong email or password"}), 400
         except:
