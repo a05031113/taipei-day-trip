@@ -87,7 +87,8 @@ async function loginAccount(data){
         });
         let result = await response.json();
         if (response.status===200){
-            window.location.reload();
+            console.log(result)
+            // window.location.reload();
         }else if(response.status===400){
             alert(result["message"]);
             return false;
