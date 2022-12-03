@@ -56,13 +56,6 @@ def api_user():
             db.close()
 
 
-@api_users.route("/test")
-@jwt_required()
-def test():
-    data = get_jwt()
-    return jsonify(data["sub"]), 200
-
-
 @api_users.route("/api/user/auth", methods=["GET", "PUT", "DELETE"])
 def api_user_auth():
     if request.method == "GET":
