@@ -13,6 +13,7 @@ const registerEmail = document.getElementById("registerEmail");
 const registerPassword = document.getElementById("registerPassword");
 const loginBtn = document.getElementById("loginBtn");
 const registerBtn = document.getElementById("registerBtn")
+const bookingBtn = document.querySelector(".project")
 const refreshToken = setInterval(function(){
     refresh();
 }, 300*1000)
@@ -54,6 +55,9 @@ logout.onclick = function(){
     logoutAccount()
     window.location.reload();
 }
+bookingBtn.onclick = function(){
+    window.location.href = "/booking"
+}
 async function registerAccount(data, loginData){
     try{
         let response = await fetch("/api/user", {
@@ -67,7 +71,7 @@ async function registerAccount(data, loginData){
         if (response.status===200){
             loginAccount(loginData)
         }else if(response.status===400){
-            alert(result["message"]);
+            alert(result.message);
             return false;
         }else{
             return false;
@@ -89,7 +93,7 @@ async function loginAccount(data){
         if (response.status===200){
             window.location.reload();
         }else if(response.status===400){
-            alert(result["message"]);
+            alert(result.message);
             return false;
         }else{
             return false;
@@ -103,7 +107,9 @@ async function refresh(){
         let response = await fetch("/refresh", {
             method: "GET",
         });
+        let result = await response.json();
         if (response.status===200){
+            sessionStorage.setItem('jwt', result.access_token)
             logout.style.display = "block";
             getRegisterLogin.style.display = "none"
         }else{
@@ -123,7 +129,7 @@ async function logoutAccount(){
         });
         let result = await response.json();
         if (response.status===200){
-            console.log(result);
+            sessionStorage.removeItem("jwt");
         }else{
             return false;
         }

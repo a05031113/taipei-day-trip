@@ -1,4 +1,4 @@
-from static.py.function import *
+from static.function import *
 
 db = connection()
 cursor = db.cursor()

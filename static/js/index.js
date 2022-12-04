@@ -61,7 +61,7 @@ let urlCat = "/api/categories";
 fetch(urlCat).then((res)=>{
     return res.json();
 }).then((result)=>{
-    let categoriesData = result["data"];
+    let categoriesData = result.data;
     for (let i=0; i<categoriesData.length;i++){
         addDiv("searchCategories", categoriesData[i], categoriesDiv, "chooseCat(this)")
     }
@@ -88,9 +88,9 @@ async function getAttractions(url){
     try {
         let response = await fetch(url);
         let result = await response.json();
-        attractionsData = result["data"];
+        attractionsData = result.data;
         if (attractionsData){
-            nextPage = result["nextPage"];
+            nextPage = result.nextPage;
             // add attraction's div
             for (let i=0; i<attractionsData.length; i++){
                 addDiv("indexAttrBox", "", attractionsDiv, "selectAttraction(this)");
