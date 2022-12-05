@@ -67,8 +67,9 @@ footer{
     cursor: pointer;
 }
 .register{
+    top: 54px;
     display: none; /* Hidden by default */
-    position: absolute; /* Stay in place */
+    position: fixed; /* Stay in place */
     z-index: 7; /* Sit on top */
     left: 0;
     top: 0;
@@ -88,8 +89,9 @@ footer{
     background-color: #FFFFFF;
 }
 .login{
+    top: 108px;
     display: none; /* Hidden by default */
-    position: absolute; /* Stay in place */
+    position: fixed; /* Stay in place */
     z-index: 7; /* Sit on top */
     left: 0;
     top: 0;
