@@ -21,6 +21,8 @@ def refresh():
 
 @api_users.route("/api/user", methods=["POST"])
 def api_user():
+    db = connection()
+    cursor = db.cursor()
     try:
         data = request.get_json()["data"]
         name = data["name"]
@@ -32,8 +34,6 @@ def api_user():
         if password_valid(password) == False:
             print("password")
             return jsonify({"error": True, "message": "密碼至少需8位英文大小寫與數字"})
-        db = connection()
-        cursor = db.cursor()
         check_is_used = "SELECT email FROM members WHERE email = %s"
         check_value = (email, )
         cursor.execute(check_is_used, check_value)
@@ -68,12 +68,12 @@ def api_user_auth():
         except:
             return jsonify({"error": True, "message": SyntaxError})
     elif request.method == "PUT":
+        db = connection()
+        cursor = db.cursor()
         try:
             data = request.get_json()
             email = data["email"]
             password = data["password"]
-            db = connection()
-            cursor = db.cursor()
             check_password = "SELECT password, id, name, email FROM members WHERE email = %s"
             check_value = (email, )
             cursor.execute(check_password, check_value)
@@ -96,6 +96,9 @@ def api_user_auth():
                 cursor.close()
                 db.close()
     elif request.method == "DELETE":
-        response = jsonify({"ok": True})
-        unset_jwt_cookies(response)
-        return response, 200
+        try:
+            response = jsonify({"ok": True})
+            unset_jwt_cookies(response)
+            return response, 200
+        except:
+            return jsonify({"error": True, "message": SyntaxError})

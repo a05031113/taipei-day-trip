@@ -51,6 +51,7 @@ loginBtn.onclick = function(){
     }
 }
 logout.onclick = function(){
+    sessionStorage.removeItem("jwt");
     logoutAccount()
     window.location.reload();
 }
@@ -128,7 +129,7 @@ async function logoutAccount(){
         });
         let result = await response.json();
         if (response.status===200){
-            sessionStorage.removeItem("jwt");
+            return true;
         }else{
             return false;
         }

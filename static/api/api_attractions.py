@@ -64,9 +64,9 @@ def api_attractions():
 
 @api_attr.route("/api/attractions/<id>")
 def api_attractions_id(id):
+    db = connection()
+    cursor = db.cursor()
     try:
-        db = connection()
-        cursor = db.cursor()
         check = "SELECT * FROM attractions WHERE id = %s"
         id = (id, )
         cursor.execute(check, id)
