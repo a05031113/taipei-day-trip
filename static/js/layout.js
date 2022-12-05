@@ -1,5 +1,5 @@
 const getRegisterLogin = document.getElementById("getRegisterLogin");
-const logout = document.getElementById("logout")
+const logout = document.getElementById("logout");
 const login = document.querySelector(".login");
 const register = document.querySelector(".register");
 const loginLeave = document.querySelector(".loginLeave");
@@ -12,8 +12,10 @@ const registerName = document.getElementById("registerName");
 const registerEmail = document.getElementById("registerEmail");
 const registerPassword = document.getElementById("registerPassword");
 const loginBtn = document.getElementById("loginBtn");
-const registerBtn = document.getElementById("registerBtn")
-const bookingBtn = document.querySelector(".project")
+const registerBtn = document.getElementById("registerBtn");
+const bookingBtn = document.querySelector(".project");
+const loginFail = document.querySelector(".loginFail");
+const registerFail = document.querySelector(".registerFail");
 const refreshToken = setInterval(function(){
     refresh();
 }, 300*1000)
@@ -28,16 +30,13 @@ registerBtn.onclick = function(){
                     "password": registerPassword.value
                 }
             };
-            const registerData = {
-                "email": registerEmail.value,
-                "password": registerPassword.value
-            };
-            registerAccount(data, registerData)
+            registerAccount(data)
         }else{
-            alert("password need at least 8 items with number, upper and lower case");
+            registerFail.textContent = "密碼至少需8位英文大小寫與數字";
+
         }
     }else{
-        alert("wrong email format");
+        registerFail.textContent = "email格式錯誤";
     }
 }
 loginBtn.onclick = function(){
@@ -48,7 +47,7 @@ loginBtn.onclick = function(){
         };
         loginAccount(data)
     }else{
-        alert("Please fill in email and password");
+        loginFail.textContent = "請輸入帳號及密碼";
     }
 }
 logout.onclick = function(){
@@ -58,7 +57,7 @@ logout.onclick = function(){
 bookingBtn.onclick = function(){
     window.location.href = "/booking"
 }
-async function registerAccount(data, loginData){
+async function registerAccount(data){
     try{
         let response = await fetch("/api/user", {
             method: "POST",
@@ -69,9 +68,9 @@ async function registerAccount(data, loginData){
         });
         let result = await response.json();
         if (response.status===200){
-            loginAccount(loginData)
+            registerFail.textContent = "註冊成功！"
         }else if(response.status===400){
-            alert(result.message);
+            registerFail.textContent = result.message;
             return false;
         }else{
             return false;
@@ -93,7 +92,7 @@ async function loginAccount(data){
         if (response.status===200){
             window.location.reload();
         }else if(response.status===400){
-            alert(result.message);
+            loginFail.textContent = result.message;
             return false;
         }else{
             return false;
@@ -145,25 +144,29 @@ loginLeave.onclick = function(){
     login.style.display = "none";
     loginEmail.value = "";
     loginPassword.value = "";
+    loginFail.textContent = "";
 }
 registerLeave.onclick = function(){
     register.style.display = "none";
     registerName.value = "";
     registerEmail.value = "";
     registerPassword.value = ""
+    registerFail.textContent = "";
 }
 registerNow.onclick = function(){
     login.style.display = "none";
     register.style.display = "flex";
     loginEmail.value = "";
     loginPassword.value = "";
+    loginFail.textContent = "";
 }
 loginNow.onclick = function(){
     register.style.display = "none";
     login.style.display = "flex";
     registerName.value = "";
     registerEmail.value = "";
-    registerPassword.value = ""
+    registerPassword.value = "";
+    registerFail.textContent = "";
 }
 function ValidateEmail(input) {
     let validRegex = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/;

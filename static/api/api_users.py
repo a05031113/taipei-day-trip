@@ -28,10 +28,10 @@ def api_user():
         password = data["password"]
         if email_valid(email) == False:
             print("email")
-            return jsonify({"error": True, "message": "wrong format"})
+            return jsonify({"error": True, "message": "email格式錯誤"})
         if password_valid(password) == False:
             print("password")
-            return jsonify({"error": True, "message": "wrong format"})
+            return jsonify({"error": True, "message": "密碼至少需8位英文大小寫與數字"})
         db = connection()
         cursor = db.cursor()
         check_is_used = "SELECT email FROM members WHERE email = %s"
@@ -39,7 +39,7 @@ def api_user():
         cursor.execute(check_is_used, check_value)
         is_used = cursor.fetchone()
         if is_used:
-            return jsonify({"error": True, "message": "Email was already used"}), 400
+            return jsonify({"error": True, "message": "此email已被使用"}), 400
         else:
             insert_member = """
                 INSERT INTO members
@@ -88,7 +88,7 @@ def api_user_auth():
                 set_refresh_cookies(response, refresh_token)
                 return response, 200
             else:
-                return jsonify({"error": True, "message": "Wrong email or password"}), 400
+                return jsonify({"error": True, "message": "帳號或密碼有誤"}), 400
         except:
             return jsonify({"error": True, "message": SyntaxError}), 500
         finally:

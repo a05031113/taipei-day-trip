@@ -29,7 +29,7 @@ nav{
 main{
     position: relative;
     top: 54px;
-    min-height: calc(100vh - 158px);
+    min-height: calc(100vh - 158px); 
 }
 footer{
     position: relative;
@@ -68,7 +68,7 @@ footer{
 }
 .register{
     display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
+    position: absolute; /* Stay in place */
     z-index: 7; /* Sit on top */
     left: 0;
     top: 0;
@@ -82,14 +82,14 @@ footer{
 .registerBox{
     position: relative;
     margin-top: 80px;
+    height: fit-content;
     width: 340px;
-    height: 332px;
     border-radius: 5px;
     background-color: #FFFFFF;
 }
 .login{
     display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
+    position: absolute; /* Stay in place */
     z-index: 7; /* Sit on top */
     left: 0;
     top: 0;
@@ -103,8 +103,8 @@ footer{
 .loginBox{
     position: relative;
     margin-top: 80px;
+    height: fit-content;
     width: 340px;
-    height: 275px;
     border-radius: 5px;
     background-color: #FFFFFF;
 }
@@ -151,7 +151,6 @@ footer{
 .loginBtn{
     margin-left: 15px;
     margin-right: 15px;
-    margin-bottom: 10px;
     border: none;
     background-color: #448899;
     color: #FFFFFF;
@@ -168,7 +167,18 @@ footer{
 .loginBtn:active{
     transform: scale(1);
 }
+.loginFail{
+    padding: 5px;
+    color: red;
+    text-align: center;
+}
+.registerFail{
+    padding: 5px;
+    color: red;
+    text-align: center;
+}
 .registerNow{
+    margin-bottom: 15px;
     text-align: center;
     font-weight: 500;
     color: #666666;
@@ -177,6 +187,7 @@ footer{
     cursor: pointer;
 }
 .loginNow{
+    margin-bottom: 15px;
     text-align: center;
     font-weight: 500;
     color: #666666;
