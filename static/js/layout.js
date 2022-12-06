@@ -106,7 +106,6 @@ async function refresh(){
         });
         let result = await response.json();
         if (response.status===200){
-            sessionStorage.setItem('jwt', result.access_token)
             logout.style.display = "block";
             getRegisterLogin.style.display = "none"
         }else{
@@ -126,10 +125,7 @@ async function logoutAccount(){
         });
         let result = await response.json();
         if (response.status===200){
-            sessionStorage.removeItem("jwt");
-            setTimeout(()=>{
-                window.location.reload();
-            }, 100)
+            window.location.reload();
         }else{
             return false;
         }

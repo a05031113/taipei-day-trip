@@ -10,11 +10,12 @@ api_users = Blueprint('api_users', __name__)
 @jwt_required(refresh=True)
 def refresh():
     try:
+        response = jsonify({"refresh": True})
         identity = get_jwt_identity()
         access_token = create_access_token(
             identity=identity, fresh=timedelta(minutes=6))
-        # set_access_cookies(response, access_token)
-        return jsonify(access_token=access_token), 200
+        set_access_cookies(response, access_token)
+        return response, 200
     except:
         return jsonify({"error": True, "message": SyntaxError})
 
