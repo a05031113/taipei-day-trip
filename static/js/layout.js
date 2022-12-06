@@ -51,9 +51,7 @@ loginBtn.onclick = function(){
     }
 }
 logout.onclick = function(){
-    sessionStorage.removeItem("jwt");
     logoutAccount()
-    window.location.reload();
 }
 bookingBtn.onclick = function(){
     window.location.href = "/booking"
@@ -129,7 +127,8 @@ async function logoutAccount(){
         });
         let result = await response.json();
         if (response.status===200){
-            return true;
+            sessionStorage.removeItem("jwt");
+            window.location.reload();
         }else{
             return false;
         }
