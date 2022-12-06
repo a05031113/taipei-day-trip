@@ -33,7 +33,6 @@ registerBtn.onclick = function(){
             registerAccount(data)
         }else{
             registerFail.textContent = "密碼至少需8位英文大小寫與數字";
-
         }
     }else{
         registerFail.textContent = "email格式錯誤";
@@ -51,7 +50,10 @@ loginBtn.onclick = function(){
     }
 }
 logout.onclick = function(){
-    logoutAccount()
+    sessionStorage.removeItem("jwt");
+    logoutAccount();
+    window.location.reload();
+
 }
 bookingBtn.onclick = function(){
     window.location.href = "/booking"
@@ -127,8 +129,7 @@ async function logoutAccount(){
         });
         let result = await response.json();
         if (response.status===200){
-            sessionStorage.removeItem("jwt");
-            window.location.reload();
+            return true;
         }else{
             return false;
         }
