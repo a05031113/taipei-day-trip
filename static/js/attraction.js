@@ -13,7 +13,7 @@ let chooseMorning;
 let chooseAfternoon;
 let chooseDate;
 let fee;
-let imgRadio
+let imgRadio;
 
 function rightPic(){
     imageIndex = image.indexOf(attractionImage.src);
@@ -65,33 +65,42 @@ function booking(){
         return false;
     }
     output = {
-        "data":{
-            "attraction":{
-                "id": id,
-                "name": Name,
-                "address": address,
-                "image": image
-            },
-            "date": chooseDate.value,
-            "time": time,
-            "price": price
-        }
+        "attractionId": id,
+        "date": chooseDate.value,
+        "time": time,
+        "price": price
     }
-    console.log(output)
+    bookAttraction(output);
+}
+async function bookAttraction(data){
+    try{
+        let response = await fetch("/api/booking", {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {
+                "Content-type": "application/json",
+                "Authorization": `Bearer ${sessionStorage.getItem('jwt')}`
+            }
+        });
+        let result = await response.json();
+        console.log(result)
+    }catch(error){
+        console.log({"error": error})
+    }
 }
 
 fetch(url).then((res)=>{
     return res.json();
 }).then((result)=>{
-    let data = result["data"];
-    image = data["image"];
-    Name = data["name"];
-    category = data["category"];
-    mrt = data["mrt"];
-    description = data["description"];
-    address = data["address"];
-    transport = data["transport"];
-
+    let data = result.data;
+    image = data.image;
+    Name = data.name;
+    category = data.category;
+    mrt = data.mrt;
+    description = data.description;
+    address = data.address;
+    transport = data.transport;
+    document.title = Name;
     function imgInput(){
         let inputRadio = "<input type='radio' class='radio'/>";
         for (let i=0; i<image.length-1; i++){

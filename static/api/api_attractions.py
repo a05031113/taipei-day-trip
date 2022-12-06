@@ -1,9 +1,9 @@
 from flask import *
-from import_data.function import *
-api = Blueprint('api', __name__)
+from static.function import *
+api_attr = Blueprint('api_attr', __name__)
 
 
-@api.route("/api/attractions")
+@api_attr.route("/api/attractions")
 def api_attractions():
     page = request.args.get("page")
     keyword = request.args.get("keyword")
@@ -55,18 +55,18 @@ def api_attractions():
         output["data"] = data
         return jsonify(output)
     except:
-        return jsonify({"error": True, "message": "Something wrong"}), 500
+        return jsonify({"error": True, "message": SyntaxError}), 500
     finally:
         if db.is_connected():
             cursor.close()
             db.close()
 
 
-@api.route("/api/attractions/<id>")
+@api_attr.route("/api/attractions/<id>")
 def api_attractions_id(id):
+    db = connection()
+    cursor = db.cursor()
     try:
-        db = connection()
-        cursor = db.cursor()
         check = "SELECT * FROM attractions WHERE id = %s"
         id = (id, )
         cursor.execute(check, id)
@@ -88,14 +88,14 @@ def api_attractions_id(id):
         else:
             return jsonify({"error": True, "message": "No id"}), 400
     except:
-        return jsonify({"error": True, "message": "Something wrong"}), 500
+        return jsonify({"error": True, "message": SyntaxError}), 500
     finally:
         if db.is_connected():
             cursor.close()
             db.close()
 
 
-@api.route("/api/categories")
+@api_attr.route("/api/categories")
 def api_categories():
     db = connection()
     cursor = db.cursor()
@@ -109,7 +109,7 @@ def api_categories():
         output["data"] = categories_list
         return jsonify(output)
     except:
-        return jsonify({"error": True, "message": "Something wrong"}), 500
+        return jsonify({"error": True, "message": SyntaxError}), 500
     finally:
         if db.is_connected():
             cursor.close()

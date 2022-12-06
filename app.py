@@ -1,12 +1,22 @@
+import os
+from dotenv import load_dotenv
 from flask import *
-from import_data.function import *
-from import_data.api import *
+from static.function import *
+from static.api.api_attractions import *
+from static.api.api_users import *
+from static.api.api_booking import *
+from flask_jwt_extended import *
+load_dotenv()
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-app.config["JSON_SORT_KEYS"] = False
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
+app.config["JWT_TOKEN_LOCATION"] = ["headers", "cookies"]
+app.config["JWT_COOKIE_SECURE"] = False
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=6)
+app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=7)
 
-# Pages
+jwt = JWTManager(app)
 
 
 @app.route("/")
@@ -29,5 +39,7 @@ def thankyou():
     return render_template("thankyou.html")
 
 
-app.register_blueprint(api)
+app.register_blueprint(api_attr)
+app.register_blueprint(api_users)
+app.register_blueprint(api_booking)
 app.run(host="0.0.0.0", port=3000, debug=True)
