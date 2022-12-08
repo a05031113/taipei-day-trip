@@ -19,6 +19,11 @@ app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=7)
 jwt = JWTManager(app)
 
 
+@jwt.unauthorized_loader
+def unauthorized_response(callback):
+    return jsonify({"error": True, "message": "Not login yet"}), 403
+
+
 @app.route("/")
 def index():
     return render_template("index.html")

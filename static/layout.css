@@ -569,7 +569,7 @@ footer{
     font-size: 16px;
     color: #666666;
 }
-.bookingBox{
+.attractionBookingBox{
     position: relative;
     margin-left: 20px;
     top: 15px;
@@ -635,6 +635,10 @@ footer{
 .feeTitle{
     font-weight: 700;
 }
+.bookingSubmitBox{
+    display: flex;
+    flex-wrap: wrap;
+}
 .bookingSubmit{
     margin-top: 25px;
     height: 36px;
@@ -652,6 +656,13 @@ footer{
 }
 .bookingSubmit:active{
     transform: scale(1);
+}
+.errorBooking{
+    color: red;
+    margin-top: 25px;
+    margin-left: 5px;
+    line-height: 36px;
+    text-align: center;
 }
 .attractionBottom{
     position: relative;
@@ -678,6 +689,25 @@ footer{
 }
 .attractionTransport{
     line-height: 23px;
+}
+/* booking */
+.bookingBox{
+    display: flex;
+    justify-content: center;
+}
+.bookingBoxInside{
+    width: 1000px;
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+.bookingHello{
+    color: #666666;
+    font-size: 19px;
+    margin-bottom: 15px;
+}
+.bookingNone{
+    color: #666666;
+    margin-top: 15px;
 }
 /* RWD */
 @media (max-width:1199px) {

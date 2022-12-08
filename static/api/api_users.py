@@ -54,9 +54,8 @@ def api_user():
     except:
         return jsonify({"error": True, "message": SyntaxError}), 500
     finally:
-        if db.is_connected():
-            cursor.close()
-            db.close()
+        cursor.close()
+        db.close()
 
 
 @api_users.route("/api/user/auth", methods=["GET", "PUT", "DELETE"])
@@ -93,9 +92,8 @@ def api_user_auth():
         except:
             return jsonify({"error": True, "message": SyntaxError}), 500
         finally:
-            if db.is_connected():
-                cursor.close()
-                db.close()
+            cursor.close()
+            db.close()
     elif request.method == "DELETE":
         try:
             response = jsonify({"ok": True})
