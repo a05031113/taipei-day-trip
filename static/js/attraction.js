@@ -77,18 +77,25 @@ function booking(){
 }
 async function bookAttraction(data){
     try{
-        const options = {
-            method: "POST",
-            body: JSON.stringify(data),
-            credentials: "same-origin",
-            headers: {
-                "Content-type": "application/json",
-                "X-CSRF-TOKEN": getCookie("csrf_access_token"),
-            },
-        };
-        const response = await fetch("/api/booking", options);
-        const result = await response.json();
-        console.log(result)
+        const isLogin = await fetch("/refresh")
+        if (isLogin.status !== 200){
+            errorBooking.textContent = "請登入";
+            return false;
+        }else{
+            const options = {
+                method: "POST",
+                body: JSON.stringify(data),
+                credentials: "same-origin",
+                headers: {
+                    "Content-type": "application/json",
+                    "X-CSRF-TOKEN": getCookie("csrf_access_token"),
+                },
+            };
+            const response = await fetch("/api/booking", options);
+            if (response.status === 200){
+                errorBooking.textContent = "預定成功";
+            }
+        }
     }catch(error){
         console.log({"error": error})
     }
@@ -141,13 +148,13 @@ fetch(url).then((res)=>{
                     <div class="attractionMrtCat">${category} at ${mrt}</div>
                     <div class="attractionBooking">
                         <div class="attractionBookingBox">
-                            <div class="bookingTitle">訂購導覽行程</div>
-                            <div class="bookingContent">以此景點為中心的一日行程。帶您探索城市角落故事</div>
-                            <div class="bookingDate">
-                                <div class="dateTitle">選擇日期：</div>
+                            <div class="attractionBookingTitle">訂購導覽行程</div>
+                            <div class="attractionBookingContent">以此景點為中心的一日行程。帶您探索城市角落故事</div>
+                            <div class="attractionBookingDate">
+                                <div class="attractionDateTitle">選擇日期：</div>
                                 <input class="chooseDate" type="date"/>
                             </div>
-                            <div class="bookingTime">
+                            <div class="attractionBookingTime">
                                 <div class="timeTitle">選擇時間：</div>
                                 <div class="chooseTime">
                                     <input class="chooseMorning" type="radio" value="morning" onclick="selectMorning()"/>
@@ -156,7 +163,7 @@ fetch(url).then((res)=>{
                                     <div style="line-height:22px">下半天</div>
                                 </div>
                             </div>
-                            <div class="bookingFee">
+                            <div class="attractionBookingFee">
                                 <div class="feeTitle">導覽費用：</div>
                                 <div class="fee"></div>
                             </div>

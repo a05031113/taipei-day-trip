@@ -82,9 +82,7 @@ def api_user_auth():
                 identity = {"user_id": str(
                     account[1]), "name": account[2], "email": account[3]}
                 response = jsonify({"login": True})
-                # access_token = create_access_token(identity=identity)
                 refresh_token = create_refresh_token(identity=identity)
-                # set_access_cookies(response, access_token)
                 set_refresh_cookies(response, refresh_token)
                 return response, 200
             else:
@@ -95,9 +93,22 @@ def api_user_auth():
             cursor.close()
             db.close()
     elif request.method == "DELETE":
+        db = connection()
+        cursor = db.cursor()
         try:
+            refresh_token = request.cookies.get("refresh_token_cookie")
+            jti = get_jti(refresh_token)
+            cursor.execute(
+                "INSERT INTO revoke_tokens (jti, type, created_at) "
+                "VALUES (%s, %s, NOW())",
+                (jti, "refresh")
+            )
+            db.commit()
             response = jsonify({"ok": True})
             unset_jwt_cookies(response)
             return response, 200
         except:
             return jsonify({"error": True, "message": SyntaxError})
+        finally:
+            cursor.close()
+            db.close()

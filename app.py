@@ -24,6 +24,27 @@ def unauthorized_response(callback):
     return jsonify({"error": True, "message": "Not login yet"}), 403
 
 
+@jwt.token_in_blocklist_loader
+def check_if_token_revoked(jwt_header, jwt_payload: dict) -> bool:
+    db = connection()
+    cursor = db.cursor()
+    try:
+        cursor.execute(
+            "SELECT * FROM revoke_tokens "
+            "WHERE jti = %s AND type = %s",
+            (jwt_payload["jti"], "refresh")
+        )
+        row = cursor.fetchone()
+        if row:
+            return True
+        return False
+    except:
+        return jsonify({"error": True, "message": SyntaxError}), 500
+    finally:
+        cursor.close()
+        db.close()
+
+
 @app.route("/")
 def index():
     return render_template("index.html")
