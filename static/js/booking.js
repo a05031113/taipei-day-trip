@@ -7,6 +7,7 @@ let bookingData;
 let userData;
 let userName;
 let email;
+let attractionId;
 let attractionName;
 let attractionImage;
 let attractionAddress;
@@ -15,6 +16,14 @@ let bookingTime;
 let bookingPrice;
 let bookingId;
 let totalCost = 0;
+let checkTrip = [];
+let contactName;
+let contactEmail;
+let contactNumber;
+let creditNumber;
+let creditExpire;
+let verifyCode;
+let checkError;
 document.title = "預定行程"
 
 getData()
@@ -98,7 +107,14 @@ async function getData(){
             helloItems.insertAdjacentHTML("beforeend", helloHtml);
             contactItems.insertAdjacentHTML("beforeend", contactHtml);
             creditItems.insertAdjacentHTML("beforeend", creditHtml);
+            contactName = document.getElementById("contactName");
+            contactEmail = document.getElementById("contactEmail");
+            contactNumber = document.getElementById("contactNumber");
+            creditNumber = document.getElementById("creditNumber");
+            creditExpire = document.getElementById("creditExpire");
+            verifyCode = document.getElementById("verifyCode");
             for (let i=0; i<bookingData.length; i++){
+                attractionId = bookingData[i].attraction.id;
                 attractionName = bookingData[i].attraction.name;
                 attractionImage = bookingData[i].attraction.image;
                 attractionAddress = bookingData[i].attraction.address;
@@ -107,6 +123,17 @@ async function getData(){
                 bookingPrice = bookingData[i].price;
                 bookingId = bookingData[i].id;
                 totalCost = totalCost + bookingPrice;
+                let trip = {
+                    "attraction": {
+                        "id": attractionId,
+                        "name": attractionName,
+                        "address": attractionAddress,
+                        "image": attractionImage
+                    },
+                    "date": bookingDate,
+                    "time": bookingTime
+                }
+                checkTrip.push(trip);
                 const bookingHtml = `
                     <div class="contactBoxInside">
                         <div class="contactBoxPosition">
@@ -138,11 +165,15 @@ async function getData(){
                         <div class="priceTotal">總價：新台幣 ${totalCost} 元</div>
                     </div>
                     <div class="verifyPosition">
-                        <button id="checkAndPay" class="checkBtn">確認訂購並付款</button>
+                        <button id="checkAndPay" class="checkBtn" onclick="checkAndPay()">確認訂購並付款</button>
+                    </div>
+                    <div class="verifyPosition">
+                        <div class="checkError"></div>
                     </div>
                 </div>
             `
             totalPrice.insertAdjacentHTML("beforeend", priceHtml);
+            checkError = document.querySelector(".checkError")
             // credit number format
             const creditNumberInput = document.getElementById('creditNumber');
             creditNumberInput.addEventListener("keydown", (event) => {
@@ -154,7 +185,7 @@ async function getData(){
             });
             creditNumberInput.addEventListener("keyup", (event) => {
                 const input = event.target.value;
-                const formattedInput = input.replace(/\D/g, '').replace(/(\d{4})/g, "$1 ").trim();
+                const formattedInput = input.replace(/\D/g, "").replace(/(\d{4})/g, "$1 ").trim();
                 creditNumberInput.value = formattedInput;
             });
             // expire month format
@@ -168,7 +199,7 @@ async function getData(){
             });
             creditExpireInput.addEventListener("keyup", (event) => {
                 const input = event.target.value;
-                const formattedInput = input.replace(/^(\d{2})(\d{2})$/g, "$1/$2"); 
+                const formattedInput = input.replace(/\D/g, "").replace(/^(\d{2})(\d{2})$/g, '$1/$2');                
                 creditExpireInput.value = formattedInput;
             });
             // CCV format
@@ -190,17 +221,79 @@ async function getData(){
         console.log({"error": error});
     }
 }
+function checkAndPay(){
+    checkInformation();
+}
 async function deleteBooking(data){
-    let response = await fetch("/api/booking", {
-        method: "DELETE",
-        body: JSON.stringify(data),
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": getCookie("csrf_access_token")
+    try{
+        const isLogin = await fetch("/refresh")
+        if (isLogin.status !== 200){
+            alert("請登入");
+            window.location.href = "/"
+        }else{
+            let response = await fetch("/api/booking", {
+                method: "DELETE",
+                body: JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": getCookie("csrf_access_token")
+                }
+            });
+            if (response.status === 200){
+                window.location.reload();
+            }
         }
-    });
-    if (response.status === 200){
-        window.location.reload();
+    }catch(error){
+        console.log({"error":error});
+    }
+}
+async function checkInformation(data){
+    try{
+        const isLogin = await fetch("/refresh")
+        if (isLogin.status !== 200){
+            alert("請登入");
+            window.location.href = "/"
+        }else{
+            if (!contactName.value || !contactEmail.value || !contactNumber.value){
+                checkError.textContent = "請輸入聯絡資訊";
+                return false;
+            }else{
+                const output = {
+                    "prime": "前端從第三方金流 TopPay 取得的交易碼",
+                    "order": {
+                        "price": totalCost,
+                        "trip": checkTrip
+                    },
+                    "contact": {
+                        "name": contactName.value,
+                        "email": contactEmail.value,
+                        "phone": contactNumber.value
+                    }
+                };
+                postOrder(output);
+            }
+        }
+    }catch(error){
+        console.log({"error":error});
+    }
+}
+async function postOrder(data){
+    try{
+        let response = await fetch("/api/orders", {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": getCookie("csrf_access_token")
+            }
+        });
+        let result = await response.json();
+        if (response.status === 200){
+            console.log(result);
+            checkError.textContent = "完成訂單"
+        }
+    }catch(error){
+        console.log({"error":error})
     }
 }
 function getCookie(name) {

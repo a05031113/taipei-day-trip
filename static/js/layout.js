@@ -16,9 +16,9 @@ const registerBtn = document.getElementById("registerBtn");
 const bookingBtn = document.querySelector(".project");
 const loginFail = document.querySelector(".loginFail");
 const registerFail = document.querySelector(".registerFail");
-const refreshToken = setInterval(function(){
-    refresh();
-}, 300*1000)
+// const refreshToken = setInterval(function(){
+//     refresh();
+// }, 300*1000)
 refresh();
 registerBtn.onclick = function(){
     if (ValidateEmail(registerEmail)){

@@ -2,9 +2,7 @@ import os
 from dotenv import load_dotenv
 from flask import *
 from static.function import *
-from static.api.api_attractions import *
-from static.api.api_users import *
-from static.api.api_booking import *
+from api import *
 from flask_jwt_extended import *
 load_dotenv()
 app = Flask(__name__)
@@ -68,4 +66,5 @@ def thankyou():
 app.register_blueprint(api_attr)
 app.register_blueprint(api_users)
 app.register_blueprint(api_booking)
+app.register_blueprint(api_order)
 app.run(host="0.0.0.0", port=3000, debug=True)

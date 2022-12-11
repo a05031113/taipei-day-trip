@@ -830,6 +830,12 @@ footer{
     font-weight: 400;
     cursor: pointer;
 }
+.checkError{
+    width: 153px;
+    color: red;
+    padding: 10px;
+    text-align: center;
+}
 .checkBtn:hover{
     transform: scale(1.05);
 }
