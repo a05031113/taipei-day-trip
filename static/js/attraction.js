@@ -79,7 +79,7 @@ async function bookAttraction(data){
     try{
         const isLogin = await fetch("/refresh")
         if (isLogin.status !== 200){
-            errorBooking.textContent = "請登入";
+            login.style.display = "flex";
             return false;
         }else{
             const options = {
@@ -105,7 +105,13 @@ function getCookie(name) {
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(';').shift();
 }
-
+function imgInput(){
+    let inputRadio = "<input type='radio' class='radio'/>";
+    for (let i=0; i<image.length-1; i++){
+        inputRadio = inputRadio + "<input type='radio' class='radio'/>";
+    }
+    return inputRadio;
+}
 fetch(url).then((res)=>{
     return res.json();
 }).then((result)=>{
@@ -118,13 +124,6 @@ fetch(url).then((res)=>{
     address = data.address;
     transport = data.transport;
     document.title = Name;
-    function imgInput(){
-        let inputRadio = "<input type='radio' class='radio'/>";
-        for (let i=0; i<image.length-1; i++){
-            inputRadio = inputRadio + "<input type='radio' class='radio'/>";
-        }
-        return inputRadio;
-    }
 
     const html =`
         <div class="attractionBoxInside">

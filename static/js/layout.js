@@ -52,9 +52,9 @@ loginBtn.onclick = function(){
 logout.onclick = function(){
     logoutAccount();
 }
-bookingBtn.onclick = function(){
-    window.location.href = "/booking"
-}
+bookingBtn.addEventListener("click", ()=>{
+    bookingPage();
+});
 async function registerAccount(data){
     try{
         let response = await fetch("/api/user", {
@@ -131,6 +131,18 @@ async function logoutAccount(){
         }
     }catch(error){
         console.log({"error": error});
+    }
+}
+async function bookingPage(){
+    try{
+        const isLogin = await fetch("/refresh")
+        if (isLogin.status !== 200){
+            login.style.display = "flex";
+        }else{
+            window.location.href="/booking"
+        }
+    }catch(error){
+        console.log({"error":error});
     }
 }
 

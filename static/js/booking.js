@@ -35,7 +35,6 @@ async function getData(){
         };
         let isLoginResponse = await fetch("/refresh", options);
         if (isLoginResponse.status !== 200){
-            alert("Please login")
             window.location.href = "/"
         }
         let bookingResponse = await fetch("/api/booking", options);
