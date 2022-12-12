@@ -112,6 +112,8 @@ async function getData(){
             creditNumber = document.getElementById("creditNumber");
             creditExpire = document.getElementById("creditExpire");
             verifyCode = document.getElementById("verifyCode");
+            contactName.value = userName;
+            contactEmail.value = email;
             for (let i=0; i<bookingData.length; i++){
                 attractionId = bookingData[i].attraction.id;
                 attractionName = bookingData[i].attraction.name;
