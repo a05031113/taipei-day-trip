@@ -8,6 +8,7 @@ let transport;
 let id = window.location.href.split("/").slice(-1)[0];
 const url = "/api/attractions/" + id;
 const attractionBox = document.querySelector(".attractionBox");
+let errorBooking
 let attractionImage;
 let chooseMorning;
 let chooseAfternoon;
@@ -53,6 +54,7 @@ function booking(){
     let time;
     let price;
     if (!chooseDate.value){
+        errorBooking.textContent = "請選日期";
         return false;
     }
     if (chooseMorning.checked){
@@ -62,7 +64,8 @@ function booking(){
         time = "afternoon";
         price = 2500;
     }else{
-        return false;
+        errorBooking.textContent = "請選時間";
+        return false
     }
     output = {
         "attractionId": id,
@@ -74,21 +77,41 @@ function booking(){
 }
 async function bookAttraction(data){
     try{
-        let response = await fetch("/api/booking", {
-            method: "POST",
-            body: JSON.stringify(data),
-            headers: {
-                "Content-type": "application/json",
-                "Authorization": `Bearer ${sessionStorage.getItem('jwt')}`
+        const isLogin = await fetch("/refresh")
+        if (isLogin.status !== 200){
+            login.style.display = "flex";
+            return false;
+        }else{
+            const options = {
+                method: "POST",
+                body: JSON.stringify(data),
+                credentials: "same-origin",
+                headers: {
+                    "Content-type": "application/json",
+                    "X-CSRF-TOKEN": getCookie("csrf_access_token"),
+                },
+            };
+            const response = await fetch("/api/booking", options);
+            if (response.status === 200){
+                errorBooking.textContent = "預定成功";
             }
-        });
-        let result = await response.json();
-        console.log(result)
+        }
     }catch(error){
         console.log({"error": error})
     }
 }
-
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
+function imgInput(){
+    let inputRadio = "<input type='radio' class='radio'/>";
+    for (let i=0; i<image.length-1; i++){
+        inputRadio = inputRadio + "<input type='radio' class='radio'/>";
+    }
+    return inputRadio;
+}
 fetch(url).then((res)=>{
     return res.json();
 }).then((result)=>{
@@ -101,13 +124,6 @@ fetch(url).then((res)=>{
     address = data.address;
     transport = data.transport;
     document.title = Name;
-    function imgInput(){
-        let inputRadio = "<input type='radio' class='radio'/>";
-        for (let i=0; i<image.length-1; i++){
-            inputRadio = inputRadio + "<input type='radio' class='radio'/>";
-        }
-        return inputRadio;
-    }
 
     const html =`
         <div class="attractionBoxInside">
@@ -130,14 +146,14 @@ fetch(url).then((res)=>{
                     <div class="attractionName">${Name}</div>
                     <div class="attractionMrtCat">${category} at ${mrt}</div>
                     <div class="attractionBooking">
-                        <div class="bookingBox">
-                            <div class="bookingTitle">訂購導覽行程</div>
-                            <div class="bookingContent">以此景點為中心的一日行程。帶您探索城市角落故事</div>
-                            <div class="bookingDate">
-                                <div class="dateTitle">選擇日期：</div>
+                        <div class="attractionBookingBox">
+                            <div class="attractionBookingTitle">訂購導覽行程</div>
+                            <div class="attractionBookingContent">以此景點為中心的一日行程。帶您探索城市角落故事</div>
+                            <div class="attractionBookingDate">
+                                <div class="attractionDateTitle">選擇日期：</div>
                                 <input class="chooseDate" type="date"/>
                             </div>
-                            <div class="bookingTime">
+                            <div class="attractionBookingTime">
                                 <div class="timeTitle">選擇時間：</div>
                                 <div class="chooseTime">
                                     <input class="chooseMorning" type="radio" value="morning" onclick="selectMorning()"/>
@@ -146,11 +162,14 @@ fetch(url).then((res)=>{
                                     <div style="line-height:22px">下半天</div>
                                 </div>
                             </div>
-                            <div class="bookingFee">
+                            <div class="attractionBookingFee">
                                 <div class="feeTitle">導覽費用：</div>
                                 <div class="fee"></div>
                             </div>
-                            <button class="bookingSubmit" type="submit" onclick="booking()">開始預約行程</button>
+                            <div class="bookingSubmitBox">
+                                <button class="bookingSubmit" type="submit" onclick="booking()">開始預約行程</button>
+                                <div class="errorBooking"> </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -174,6 +193,7 @@ fetch(url).then((res)=>{
     fee = document.querySelector(".fee");
     imgRadio = document.querySelectorAll(".radio");
     imgRadio[0].checked = true;
+    errorBooking = document.querySelector(".errorBooking")
 })
 
 

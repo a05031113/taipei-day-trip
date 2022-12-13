@@ -57,9 +57,8 @@ def api_attractions():
     except:
         return jsonify({"error": True, "message": SyntaxError}), 500
     finally:
-        if db.is_connected():
-            cursor.close()
-            db.close()
+        cursor.close()
+        db.close()
 
 
 @api_attr.route("/api/attractions/<id>")
@@ -90,9 +89,8 @@ def api_attractions_id(id):
     except:
         return jsonify({"error": True, "message": SyntaxError}), 500
     finally:
-        if db.is_connected():
-            cursor.close()
-            db.close()
+        cursor.close()
+        db.close()
 
 
 @api_attr.route("/api/categories")
@@ -111,6 +109,5 @@ def api_categories():
     except:
         return jsonify({"error": True, "message": SyntaxError}), 500
     finally:
-        if db.is_connected():
-            cursor.close()
-            db.close()
+        cursor.close()
+        db.close()

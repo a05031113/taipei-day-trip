@@ -2,9 +2,7 @@ import os
 from dotenv import load_dotenv
 from flask import *
 from static.function import *
-from static.api.api_attractions import *
-from static.api.api_users import *
-from static.api.api_booking import *
+from api import *
 from flask_jwt_extended import *
 load_dotenv()
 app = Flask(__name__)
@@ -17,6 +15,32 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=6)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=7)
 
 jwt = JWTManager(app)
+
+
+@jwt.unauthorized_loader
+def unauthorized_response(callback):
+    return jsonify({"error": True, "message": "Not login yet"}), 403
+
+
+@jwt.token_in_blocklist_loader
+def check_if_token_revoked(jwt_header, jwt_payload: dict) -> bool:
+    db = connection()
+    cursor = db.cursor()
+    try:
+        cursor.execute(
+            "SELECT * FROM revoke_tokens "
+            "WHERE jti = %s AND type = %s",
+            (jwt_payload["jti"], "refresh")
+        )
+        row = cursor.fetchone()
+        if row:
+            return True
+        return False
+    except:
+        return jsonify({"error": True, "message": SyntaxError}), 500
+    finally:
+        cursor.close()
+        db.close()
 
 
 @app.route("/")
@@ -42,4 +66,5 @@ def thankyou():
 app.register_blueprint(api_attr)
 app.register_blueprint(api_users)
 app.register_blueprint(api_booking)
+app.register_blueprint(api_order)
 app.run(host="0.0.0.0", port=3000, debug=True)
