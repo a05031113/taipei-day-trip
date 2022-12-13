@@ -1,4 +1,4 @@
-from static.function import *
+from api.db import *
 
 db = connection()
 cursor = db.cursor()

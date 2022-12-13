@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
 from flask import *
-from static.function import *
 from api import *
 from flask_jwt_extended import *
 load_dotenv()
@@ -13,6 +12,10 @@ app.config["JWT_TOKEN_LOCATION"] = ["headers", "cookies"]
 app.config["JWT_COOKIE_SECURE"] = False
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=6)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=7)
+app.register_blueprint(api_attractions)
+app.register_blueprint(api_users)
+app.register_blueprint(api_booking)
+app.register_blueprint(api_order)
 
 jwt = JWTManager(app)
 
@@ -63,8 +66,4 @@ def thankyou():
     return render_template("thankyou.html")
 
 
-app.register_blueprint(api_attr)
-app.register_blueprint(api_users)
-app.register_blueprint(api_booking)
-app.register_blueprint(api_order)
 app.run(host="0.0.0.0", port=3000, debug=True)

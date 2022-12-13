@@ -229,7 +229,6 @@ async function deleteBooking(data){
     try{
         const isLogin = await fetch("/refresh")
         if (isLogin.status !== 200){
-            alert("請登入");
             window.location.href = "/"
         }else{
             let response = await fetch("/api/booking", {
@@ -252,7 +251,6 @@ async function checkInformation(data){
     try{
         const isLogin = await fetch("/refresh")
         if (isLogin.status !== 200){
-            alert("請登入");
             window.location.href = "/"
         }else{
             if (!contactName.value || !contactEmail.value || !contactNumber.value){
