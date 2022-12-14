@@ -1,4 +1,4 @@
-from api.db import *
+from application.model.db import *
 
 db = connection()
 cursor = db.cursor()

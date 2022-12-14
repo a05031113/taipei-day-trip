@@ -1,0 +1,1 @@
+from .thankyou import *
