@@ -299,6 +299,9 @@ footer{
     font-size: 16px;
     font-weight: 700;
 }
+.searchInput:focus{
+    outline: none;
+}
 .input,input::placeholder{
     font-size: 16px;
 }
@@ -312,10 +315,10 @@ footer{
     border-bottom-right-radius: 5px;
 }
 .searchButton:hover{
-    transform: scale(1.05);
+    background: #2b5863;
 }
 .searchButton:active{
-    transform: scale(1);
+    background: #448899;
 }
 .categories{
     position: absolute;

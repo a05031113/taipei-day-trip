@@ -74,7 +74,7 @@ window.addEventListener("click", (event)=>{
         searchBtn.style.zIndex="1";
     }
 });
-async function getCategory(){
+async function getCategory(url){
     try{
         let response = await fetch(url);
         let result = await response.json();
