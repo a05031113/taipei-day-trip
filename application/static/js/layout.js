@@ -16,11 +16,8 @@ const registerBtn = document.getElementById("registerBtn");
 const bookingBtn = document.querySelector(".project");
 const loginFail = document.querySelector(".loginFail");
 const registerFail = document.querySelector(".registerFail");
-// const refreshToken = setInterval(function(){
-//     refresh();
-// }, 300*1000)
 refresh();
-registerBtn.onclick = function(){
+registerBtn.addEventListener("click", ()=>{
     if (ValidateEmail(registerEmail)){
         if (ValidatePassword(registerPassword)){
             const data = {
@@ -37,8 +34,8 @@ registerBtn.onclick = function(){
     }else{
         registerFail.textContent = "email格式錯誤";
     }
-}
-loginBtn.onclick = function(){
+});
+loginBtn.addEventListener("click", ()=>{
     if (loginEmail && loginPassword){
         const data = {
             "email": loginEmail.value,
@@ -48,12 +45,43 @@ loginBtn.onclick = function(){
     }else{
         loginFail.textContent = "請輸入帳號及密碼";
     }
-}
-logout.onclick = function(){
+});
+logout.addEventListener("click", ()=>{
     logoutAccount();
-}
+});
 bookingBtn.addEventListener("click", ()=>{
     bookingPage();
+});
+getRegisterLogin.addEventListener("click", ()=>{
+    login.style.display = "flex";
+});
+loginLeave.addEventListener("click", ()=>{
+    login.style.display = "none";
+    loginEmail.value = "";
+    loginPassword.value = "";
+    loginFail.textContent = "";
+});
+registerLeave.addEventListener("click", ()=>{
+    register.style.display = "none";
+    registerName.value = "";
+    registerEmail.value = "";
+    registerPassword.value = ""
+    registerFail.textContent = "";
+});
+registerNow.addEventListener("click", ()=>{
+    login.style.display = "none";
+    register.style.display = "flex";
+    loginEmail.value = "";
+    loginPassword.value = "";
+    loginFail.textContent = "";
+});
+loginNow.addEventListener("click", ()=>{
+    register.style.display = "none";
+    login.style.display = "flex";
+    registerName.value = "";
+    registerEmail.value = "";
+    registerPassword.value = "";
+    registerFail.textContent = "";
 });
 async function registerAccount(data){
     try{
@@ -144,38 +172,6 @@ async function bookingPage(){
     }catch(error){
         console.log({"error":error});
     }
-}
-
-getRegisterLogin.onclick = function(){
-    login.style.display = "flex";
-}
-loginLeave.onclick = function(){
-    login.style.display = "none";
-    loginEmail.value = "";
-    loginPassword.value = "";
-    loginFail.textContent = "";
-}
-registerLeave.onclick = function(){
-    register.style.display = "none";
-    registerName.value = "";
-    registerEmail.value = "";
-    registerPassword.value = ""
-    registerFail.textContent = "";
-}
-registerNow.onclick = function(){
-    login.style.display = "none";
-    register.style.display = "flex";
-    loginEmail.value = "";
-    loginPassword.value = "";
-    loginFail.textContent = "";
-}
-loginNow.onclick = function(){
-    register.style.display = "none";
-    login.style.display = "flex";
-    registerName.value = "";
-    registerEmail.value = "";
-    registerPassword.value = "";
-    registerFail.textContent = "";
 }
 function ValidateEmail(input) {
     let validRegex = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/;

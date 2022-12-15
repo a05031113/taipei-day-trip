@@ -1,8 +1,8 @@
 from flask import *
 
-index_page = Blueprint("index_page", __name__)
+api_index = Blueprint("api_index", __name__)
 
 
-@index_page.route("/")
+@api_index.route("/")
 def index():
     return render_template("index.html")

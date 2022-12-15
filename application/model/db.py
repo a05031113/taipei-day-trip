@@ -1,6 +1,3 @@
-import re
-
-
 def connection():
     import mysql.connector as connector
     db = connector.connect(

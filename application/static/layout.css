@@ -665,9 +665,12 @@ footer{
     text-align: center;
 }
 .attractionBottom{
+    
     position: relative;
     margin-top: 50px;
     margin-bottom: 40px;
+    margin-left: 10px;
+    margin-right: 10px;
     font-weight: 400;
     font-size: 16px;
     color: #666666;
@@ -796,8 +799,7 @@ footer{
     color: #666666;
     font-weight: 700;
 }
-
-.totalPrice{
+.priceItems{
     display: flex;
     justify-content: center;
 }
@@ -894,6 +896,11 @@ footer{
     .attractionBottom{
         margin-left: 10px;
         margin-right: 10px;
+    }
+    .attractionHr{
+        margin-left: 10px;
+        margin-right: 10px;
+        width: calc(100% - 20px);
     }
     /* booking */
     .contactInformation{

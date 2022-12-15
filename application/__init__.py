@@ -25,7 +25,7 @@ def create_app():
         app.register_blueprint(api_users)
         app.register_blueprint(api_booking)
         app.register_blueprint(api_order)
-        app.register_blueprint(index_page)
-        app.register_blueprint(thankyou)
+        app.register_blueprint(api_index)
+        app.register_blueprint(api_thankyou)
 
     return app

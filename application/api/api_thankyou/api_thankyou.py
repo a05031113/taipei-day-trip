@@ -1,8 +1,8 @@
 from flask import *
 
-thankyou = Blueprint("thankyou", __name__)
+api_thankyou = Blueprint("api_thankyou", __name__)
 
 
-@thankyou.route("/thankyou")
+@api_thankyou.route("/thankyou")
 def thankyou_route():
     return render_template("thankyou.html")

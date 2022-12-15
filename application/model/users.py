@@ -7,7 +7,7 @@ from datetime import *
 jwt = JWTManager()
 
 
-class search_database:
+class database:
     def check_user_exist(email):
         db = connection()
         cursor = db.cursor()
@@ -104,7 +104,7 @@ class token:
 
     def logout(refresh_token):
         jti = get_jti(refresh_token)
-        search_database.revoke(jti)
+        database.revoke(jti)
         response = jsonify({"ok": True})
         unset_jwt_cookies(response)
         return response

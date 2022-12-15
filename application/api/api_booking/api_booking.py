@@ -14,10 +14,10 @@ def booking():
 def api_booking_get():
     try:
         member_id = int(get_jwt()["sub"]["user_id"])
-        booking_data_all = search_database.booking_data(member_id)
+        booking_data_all = database.booking_data(member_id)
         if booking_data_all == None:
             return jsonify({"data": None})
-        output = data_return.output_booking(booking_data_all)
+        output = data_output.booking_data(booking_data_all)
         return jsonify(output), 200
     except:
         return jsonify({"error": True, "message": SyntaxError}), 500
@@ -35,7 +35,7 @@ def api_booking_post():
         price = data["price"]
         if date == None or time == None or price == None:
             return jsonify({"error": True, "message": "缺少日期或時間"}), 400
-        search_database.insert_booking(
+        database.insert_booking(
             member_id, attraction_id, date, time, price)
         return jsonify({"ok": True}), 200
     except TypeError:
@@ -50,7 +50,7 @@ def api_booking_delete():
     try:
         data = request.get_json()
         delete_id = data["deleteId"]
-        search_database.delete_booking(delete_id)
+        database.delete_booking(delete_id)
         return jsonify({"ok": True})
     except:
         return jsonify({"error": True, "message": SyntaxError}), 500

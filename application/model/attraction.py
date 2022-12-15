@@ -1,7 +1,7 @@
 from .db import *
 
 
-class search_database:
+class database:
     def by_keyword(keyword, page):
         db = connection()
         cursor = db.cursor(buffered=True, dictionary=True)
@@ -70,12 +70,12 @@ class search_database:
         return output
 
 
-class data_return:
+class data_output:
     def if_keyword(keyword, page):
         if keyword:
-            return search_database.by_keyword(keyword, page)
+            return database.by_keyword(keyword, page)
         else:
-            return search_database.no_keyword(page)
+            return database.no_keyword(page)
 
     def attraction_data(attraction, images):
         attraction_data = {}
@@ -104,8 +104,8 @@ class data_return:
             output = {"data": [], "nextPage": None}
         for i in range(count):
             id = attractions[i]["id"]
-            images = search_database.image_url(id)
-            result = data_return.attraction_data(attractions[i], images)
+            images = database.image_url(id)
+            result = data_output.attraction_data(attractions[i], images)
             data.append(result)
         output["data"] = data
         return output
@@ -113,8 +113,8 @@ class data_return:
     def output_data_id(attraction, id):
         if attraction:
             output = {}
-            images = search_database.image_url(id)
-            result = data_return.attraction_data(attraction, images)
+            images = database.image_url(id)
+            result = data_output.attraction_data(attraction, images)
             output["data"] = result
             return output
         else:

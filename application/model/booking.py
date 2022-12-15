@@ -1,7 +1,7 @@
 from .db import *
 
 
-class search_database:
+class database:
     def booking_data(member_id):
         db = connection()
         cursor = db.cursor(buffered=True, dictionary=True)
@@ -62,12 +62,12 @@ class search_database:
         return True
 
 
-class data_return:
-    def output_booking(booking_data_all):
+class data_output:
+    def booking_data(booking_data_all):
         output = {}
         data_list = []
         for booking_data in booking_data_all:
-            attraction_image = search_database.image_url(booking_data)
+            attraction_image = database.image_url(booking_data)
             data = {}
             attraction = {}
             attraction["id"] = booking_data["attraction_id"]
