@@ -122,8 +122,18 @@ function bookingRender(){
     }
 }
 function deleteThis(element){
-    itemNumber = element.offsetParent.innerText.split("：").slice(-1)[0];
+    const itemNumber = element.offsetParent.innerText.split("：").slice(-1)[0];
+    element.offsetParent.parentElement.parentElement.parentElement.innerHTML="";
     deleteBooking({"deleteId": itemNumber});
+    const deleteBtn = document.querySelector(".bookingDelete");
+    if (!deleteBtn){
+        helloItems.innerHTML = "";
+        bookingItems.innerHTML = "";
+        contactItems.innerHTML = "";
+        creditItems.innerHTML = "";
+        priceItems.innerHTML = "";
+        noneBookingRender();
+    }
 }
 function contactRender(){
     const contactHtml = `
@@ -262,7 +272,7 @@ async function deleteBooking(data){
                 }
             });
             if (response.status === 200){
-                window.location.reload();
+                return true;
             }
         }
     }catch(error){

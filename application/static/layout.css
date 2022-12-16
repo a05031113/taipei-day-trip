@@ -321,6 +321,7 @@ footer{
     background: #448899;
 }
 .categories{
+    z-index: 2;
     position: absolute;
     display: none;
     flex-wrap: wrap;
