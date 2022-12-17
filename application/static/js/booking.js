@@ -150,6 +150,7 @@ function noneBookingRender(){
         </div>
     `
     helloItems.insertAdjacentHTML("beforeend", noneBookingHtml);
+    loading.style.display = "none";
 }
 function helloRender(){
     const helloHtml = `
