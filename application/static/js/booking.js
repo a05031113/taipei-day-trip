@@ -4,6 +4,8 @@ const bookingItems = document.querySelector(".bookingItems");
 const contactItems = document.querySelector(".contactItems");
 const creditItems = document.querySelector(".creditItems");
 const priceItems = document.querySelector(".priceItems");
+const total = document.getElementById("total");
+const loading = document.querySelector(".loading");
 let bookingData;
 let userData;
 let userName;
@@ -18,15 +20,97 @@ let bookingPrice;
 let bookingId;
 let totalCost = 0;
 let checkTrip = [];
-let contactName;
-let contactEmail;
-let contactNumber;
-let creditNumber;
-let creditExpire;
-let verifyCode;
-let checkError;
+const contactName = document.getElementById("contactName");
+const contactEmail = document.getElementById("contactEmail");
+const contactNumber = document.getElementById("contactNumber");
+// const creditNumber = document.getElementById("card-number");
+// const creditExpire = document.getElementById("card-expiration-date");
+// const verifyCode = document.getElementById("card-ccv");
+const checkError = document.querySelector(".checkError");
+const checkAndPay = document.getElementById("checkAndPay");
+getData();
 
-getData()
+TPDirect.setupSDK(
+    126838, 
+    'app_b4aKLpBYbjJFFoe5Yg277LDwRU8dczg2Ll0r262iWxWusoPD5vq0nOs1rw3p', 
+    'sandbox'
+);
+TPDirect.card.setup({
+    fields: {
+        number: {
+            element: "#card-number",
+            placeholder: '**** **** **** ****'
+        },
+        expirationDate: {
+            element: "#card-expiration-date",
+            placeholder: 'MM / YY'
+        },
+        ccv: {
+            element: "#card-ccv",
+            placeholder: 'CCV'
+        }
+    },
+    styles: {
+        'input': {
+            'color': 'gray',
+            'font-size': '16px'
+        },
+        'input.number':{
+            'font-size': '16px'
+        },
+        'input.expirationDate':{
+            'font-size': '16px'
+        },
+        'input.ccv': {
+            'font-size': '16px'
+        },
+        ':focus': {
+            'color': 'black'
+        },
+        '.valid': {
+            'color': 'green'
+        },
+        '.invalid': {
+            'color': 'red'
+        },
+        '@media screen and (max-width: 400px)': {
+            'input': {
+                'color': 'orange'
+            }
+        }
+    },
+    isMaskCreditCardNumber: true,
+    maskCreditCardNumberRange: {
+        beginIndex: 6, 
+        endIndex: 11
+    }
+});
+checkAndPay.addEventListener("click", ()=>{
+    TPDirect.card.getPrime(function (result) {
+        if (!contactName.value || !contactEmail.value || !contactNumber.value){
+            checkError.textContent = "請輸入聯絡資訊";
+            return false;
+        }
+        if (result.status !==0){
+            checkError.textContent = "請輸入信用卡資訊";
+            return false;
+        }
+        let primeCode = result.card.prime;
+        const output = {
+            "prime": primeCode,
+            "order": {
+                "price": totalCost,
+                "trip": checkTrip
+            },
+            "contact": {
+                "name": contactName.value,
+                "email": contactEmail.value,
+                "phone": contactNumber.value
+            }
+        };
+        checkInformation(output);
+    });
+});
 async function getData(){
     try{
         const options = {
@@ -44,13 +128,15 @@ async function getData(){
         userName = userData.name;
         email = userData.email;
         if (typeof bookingData==="undefined"){
+            helloItems.innerHTML = "";
+            bookingItems.innerHTML = "";
+            contactItems.innerHTML = "";
+            creditItems.innerHTML = "";
+            priceItems.innerHTML = "";    
             noneBookingRender();            
         }else{
             helloRender();
             bookingRender();
-            contactRender();
-            creditRender();
-            priceRender();
         }
     }catch(error){
         console.log({"error": error});
@@ -107,6 +193,8 @@ function bookingRender(){
             </div>
         `
         bookingItems.insertAdjacentHTML("beforeend", bookingHtml);
+        contactName.value = userName;
+        contactEmail.value = email;
         totalCost = totalCost + bookingPrice;
         let trip = {
             "attraction": {
@@ -119,6 +207,23 @@ function bookingRender(){
             "time": bookingTime
         }
         checkTrip.push(trip);
+    }
+    const priceHtml = `
+        <div class="priceTotal">總價：新台幣 ${totalCost} 元</div>
+    `
+    total.insertAdjacentHTML("beforeend", priceHtml);
+    loading.style.display = "none";
+}
+async function checkInformation(output){
+    try{
+        const isLogin = await fetch("/refresh")
+        if (isLogin.status !== 200){
+            window.location.href = "/"
+        }else{
+            postOrder(output);    
+        }
+    }catch(error){
+        console.log({"error":error});
     }
 }
 function deleteThis(element){
@@ -134,128 +239,6 @@ function deleteThis(element){
         priceItems.innerHTML = "";
         noneBookingRender();
     }
-}
-function contactRender(){
-    const contactHtml = `
-        <div class="contactBoxInside">
-            <div class="contactBoxPosition">
-                <div class="contactInformation">
-                    <div class="contactTitle">您的聯絡資訊</div>
-                    <div class="contactDetail">
-                        <div class="contactName">聯絡姓名：</div>
-                        <input id="contactName" class="contactInput" type="text" placeholder="姓名"/>
-                    </div>
-                    <div class="contactDetail">
-                        <div class="contactName">聯絡信箱：</div>
-                        <input id="contactEmail" class="contactInput" type="text" placeholder="信箱"/>
-                    </div>
-                    <div class="contactDetail">
-                        <div class="contactName">手機號碼：</div>
-                        <input id="contactNumber" class="contactInput" type="text" placeholder="手機號碼"/>
-                    </div>
-                    <div class="notification">請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。</div>
-                </div>
-            </div>
-            <hr style="border: 1px solid #E8E8E8; height: 0px">
-        </div>
-    `
-    contactItems.insertAdjacentHTML("beforeend", contactHtml);
-    contactName = document.getElementById("contactName");
-    contactEmail = document.getElementById("contactEmail");
-    contactNumber = document.getElementById("contactNumber");
-    contactName.value = userName;
-    contactEmail.value = email;
-}
-function creditRender(){
-    const creditHtml = `
-        <div class="contactBoxInside">
-            <div class="contactBoxPosition">
-                <div class="contactInformation">
-                    <div class="contactTitle">信用卡聯絡資訊</div>
-                    <div class="contactDetail">
-                        <div class="contactName">卡片號碼：</div>
-                        <input id="creditNumber" class="contactInput" type="text" placeholder="**** **** **** ****"/>
-                    </div>
-                    <div class="contactDetail">
-                        <div class="contactName">過期時間：</div>
-                        <input id="creditExpire" class="contactInput" type="text" placeholder="MM/YY"/>
-                    </div>
-                    <div class="contactDetail">
-                        <div class="contactName">驗證密碼：</div>
-                        <input id="verifyCode" class="contactInput" type="password" placeholder="CVV"/>
-                    </div>
-                </div>
-            </div>
-            <hr style="border: 1px solid #E8E8E8; height: 0px">
-        </div>
-    `
-    creditItems.insertAdjacentHTML("beforeend", creditHtml);
-    creditNumber = document.getElementById("creditNumber");
-    creditExpire = document.getElementById("creditExpire");
-    verifyCode = document.getElementById("verifyCode");
-    // credit number format
-    const creditNumberInput = document.getElementById('creditNumber');
-    creditNumberInput.addEventListener("keydown", (event) => {
-        const input = event.target.value;
-        const digitsOnly = input.replace(/\D/g, ""); 
-        if (event.key.length === 1 && digitsOnly.length > 15) {
-            event.preventDefault();
-        }
-    });
-    creditNumberInput.addEventListener("keyup", (event) => {
-        const input = event.target.value;
-        const formattedInput = input.replace(/\D/g, "").replace(/(\d{4})/g, "$1 ").trim();
-        creditNumberInput.value = formattedInput;
-    });
-    // expire month format
-    const creditExpireInput = document.getElementById("creditExpire");
-    creditExpireInput.addEventListener("keydown", (event) => {
-        const input = event.target.value;
-        const digitsOnly = input.replace(/\D/g, "");
-        if (event.key.length === 1 && digitsOnly.length > 3) {
-            event.preventDefault();
-        }
-    });
-    creditExpireInput.addEventListener("keyup", (event) => {
-        const input = event.target.value;
-        const formattedInput = input.replace(/\D/g, "").replace(/^(\d{2})(\d{2})$/g, '$1/$2');                
-        creditExpireInput.value = formattedInput;
-    });
-    // CCV format
-    const verifyCodeInput = document.getElementById("verifyCode");
-    verifyCodeInput.addEventListener("keydown", (event) => {
-        const input = event.target.value;
-        const digitsOnly = input.replace(/\D/g, "");
-        if (event.key.length === 1 && digitsOnly.length > 2) {
-            event.preventDefault();
-        }
-    });
-    verifyCodeInput.addEventListener("input", (event) => {
-        const input = event.target.value;
-        const digitsOnly = input.replace(/\D/g, ''); 
-        verifyCodeInput.value = digitsOnly;
-    });
-}
-function priceRender(){
-    const priceHtml = `
-        <div class="finalPrice">
-            <div class="verifyPosition">
-                <div class="priceTotal">總價：新台幣 ${totalCost} 元</div>
-            </div>
-            <div class="verifyPosition">
-                <button id="checkAndPay" class="checkBtn">確認訂購並付款</button>
-            </div>
-            <div class="verifyPosition">
-                <div class="checkError"></div>
-            </div>
-        </div>
-    `
-    priceItems.insertAdjacentHTML("beforeend", priceHtml);
-    checkError = document.querySelector(".checkError");
-    const checkAndPay = document.getElementById("checkAndPay");
-    checkAndPay.addEventListener("click", ()=>{
-        checkInformation();
-    })
 }
 async function deleteBooking(data){
     try{
@@ -273,35 +256,6 @@ async function deleteBooking(data){
             });
             if (response.status === 200){
                 return true;
-            }
-        }
-    }catch(error){
-        console.log({"error":error});
-    }
-}
-async function checkInformation(data){
-    try{
-        const isLogin = await fetch("/refresh")
-        if (isLogin.status !== 200){
-            window.location.href = "/"
-        }else{
-            if (!contactName.value || !contactEmail.value || !contactNumber.value){
-                checkError.textContent = "請輸入聯絡資訊";
-                return false;
-            }else{
-                const output = {
-                    "prime": "前端從第三方金流 TopPay 取得的交易碼",
-                    "order": {
-                        "price": totalCost,
-                        "trip": checkTrip
-                    },
-                    "contact": {
-                        "name": contactName.value,
-                        "email": contactEmail.value,
-                        "phone": contactNumber.value
-                    }
-                };
-                postOrder(output);
             }
         }
     }catch(error){

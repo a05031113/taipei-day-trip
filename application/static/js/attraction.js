@@ -11,6 +11,7 @@ const attractionBox = document.querySelector(".attractionBox");
 const attractionTopLeft = document.querySelector(".attractionTopLeft");
 const attractionTopRight = document.querySelector(".attractionTopRight");
 const attractionBottom = document.querySelector(".attractionBottom");
+const loading = document.querySelector(".loading");
 let errorBooking;
 getAttractions(url)
 async function getAttractions(url){
@@ -38,7 +39,7 @@ async function getAttractions(url){
 }
 function topLeftRender(){
     const topLeftHtml = `
-        <img class="attractionImage" src=${image[0]} alt=""/>
+        ${imgInput()}
         <div class="imgArrow">
             <div class="arrow">
                 <img class="leftArrow" src="/static/image/btn_leftArrow.png"/>
@@ -47,44 +48,65 @@ function topLeftRender(){
         </div>
         <div class="imgRadio">
             <div class="radioInput">
-                ${imgInput()}
+                ${radioInput()}
             </div>
         </div>
     `
     attractionTopLeft.insertAdjacentHTML('beforeend', topLeftHtml);
-    const attractionImage = document.querySelector(".attractionImage");
+    const attractionImage = document.querySelectorAll(".attractionImage");
     const leftArrow = document.querySelector(".leftArrow");
     const rightArrow = document.querySelector(".rightArrow");
     const imgRadio = document.querySelectorAll(".radio");
+    attractionImage[0].style.display = "block";
     imgRadio[0].checked = true;
+    loading.style.display = "none";
     rightArrow.addEventListener("click", ()=>{
-        imageIndex = image.indexOf(attractionImage.src);
+        for (let i = 0; i<image.length; i++){
+            if (imgRadio[i].checked){
+                imageIndex = i;
+                break;
+            }
+        }
+        attractionImage[imageIndex].style.display = "none";
         imgRadio[imageIndex].checked = false;
         if (imageIndex===image.length-1){
-            attractionImage.src = image[0];
+            attractionImage[0].style.display = "block";
             imgRadio[0].checked = true;
         }else{
-            attractionImage.src = image[imageIndex + 1];
+            attractionImage[imageIndex + 1].style.display = "block";
             imgRadio[imageIndex+1].checked = true;
         }
     });
     leftArrow.addEventListener("click", ()=>{
-        imageIndex = image.indexOf(attractionImage.src)
+        for (let i = 0; i<image.length; i++){
+            if (imgRadio[i].checked){
+                imageIndex = i;
+                break;
+            }
+        }
+        attractionImage[imageIndex].style.display = "none";
         imgRadio[imageIndex].checked = false;
         if (imageIndex===0){
-            attractionImage.src = image[image.length - 1]
+            attractionImage[image.length - 1].style.display = "block";
             imgRadio[image.length-1].checked = true;
         }else{
-            attractionImage.src = image[imageIndex - 1]
+            attractionImage[imageIndex - 1].style.display = "block";
             imgRadio[imageIndex-1].checked = true;
         }
     });
-    function imgInput(){
+    function radioInput(){
         let inputRadio = `<input type='radio' class='radio'/>`;
         for (let i=0; i<image.length-1; i++){
             inputRadio = inputRadio + `<input type='radio' class='radio'/>`;
         }
         return inputRadio;
+    }
+    function imgInput(){
+        let imgAttraction = `<img class="attractionImage" src=${image[0]} style="display:none;" alt=""/>`
+        for (let i=1; i<image.length; i++){
+            imgAttraction = imgAttraction + `<img class="attractionImage" src=${image[i]} style="display:none;" alt=""/>`
+        }
+        return imgAttraction;
     }
 }
 function topRightRender(){

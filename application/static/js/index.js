@@ -1,4 +1,5 @@
 const listEnd = document.querySelector("footer");
+const loading = document.querySelector(".loading");
 let searchSearchDiv = document.querySelector(".searchInput");
 let attractionsDiv = document.querySelector(".indexAttractionsBox");
 let categoriesDiv = document.querySelector(".categories");
@@ -118,6 +119,7 @@ async function getAttractions(url){
             }
             isLoading = false;
             page++;
+            loading.style.display = "none";
         }else{
             attractionsDiv.innerHTML="";
             addDiv("noData", "Here is no data", attractionsDiv);
