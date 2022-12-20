@@ -83,6 +83,22 @@ class database:
         db.close()
         return order_information
 
+    def get_order_information_by_number(orderNumber):
+        db = connection()
+        cursor = db.cursor(buffered=True, dictionary=True)
+        select_number = """
+            SELECT orders.id, price, orders.name, email, phone, payment, attraction_id, date, time, attractions.name as attraction_name, address FROM orders 
+            INNER JOIN order_attraction ON orders.id = order_attraction.order_number 
+            INNER JOIN attractions ON order_attraction.attraction_id = attractions.id
+            WHERE orders.id = %s;
+            """
+        select_id = (orderNumber, )
+        cursor.execute(select_number, select_id)
+        order_information = cursor.fetchall()
+        cursor.close()
+        db.close()
+        return order_information
+
     def image_url(attraction_id):
         db = connection()
         cursor = db.cursor(buffered=True, dictionary=True)
@@ -95,19 +111,6 @@ class database:
         cursor.close()
         db.close()
         return attraction_image
-
-    # def get_order_attraction(order_number):
-    #     db = connection()
-    #     cursor = db.cursor(buffered=True, dictionary=True)
-    #     select_number = """
-    #         SELECT attraction_id, date, time FROM order_attraction WHERE order_number = %s;
-    #         """
-    #     select_id = (order_number, )
-    #     cursor.execute(select_number, select_id)
-    #     order_attraction = cursor.fetchall()
-    #     cursor.close()
-    #     db.close()
-    #     return order_attraction
 
 
 class tap_pay:
@@ -186,6 +189,24 @@ class data_output:
                 order["trip"] = trip
                 data.append(order)
         output["data"] = data
+        return output
+
+    def order_data_by_number(order_information):
+        output = {}
+        trip = []
+        for information in order_information:
+            order = {}
+            order["number"] = information["id"]
+            order["price"] = information["price"]
+            order["status"] = information["payment"]
+            contact = {}
+            contact["name"] = information["name"]
+            contact["email"] = information["email"]
+            contact["phone"] = information["phone"]
+            order["contact"] = contact
+            trip.append(data_output.trip(information))
+        order["trip"] = trip
+        output["data"] = order
         return output
 
     def trip(information):

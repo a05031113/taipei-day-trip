@@ -25,6 +25,7 @@ const contactEmail = document.getElementById("contactEmail");
 const contactNumber = document.getElementById("contactNumber");
 const checkError = document.querySelector(".checkError");
 const checkAndPay = document.getElementById("checkAndPay");
+const trading = document.querySelector(".trading");
 let isOrder = false;
 getData();
 
@@ -86,15 +87,18 @@ TPDirect.card.setup({
 checkAndPay.addEventListener("click", ()=>{
     if (!isOrder){
         isOrder = true;
+        trading.style.display = "block";
         TPDirect.card.getPrime(function (result) {
             if (!contactName.value || !contactEmail.value || !contactNumber.value){
                 checkError.textContent = "請輸入聯絡資訊";
                 isOrder = false;
+                trading.style.display = "none";
                 return false;
             }
             if (result.status !==0){
                 checkError.textContent = "請確認信用卡資訊";
                 isOrder = false;
+                trading.style.display = "none";
                 return false;
             }
             let primeCode = result.card.prime;
@@ -172,6 +176,7 @@ async function postOrder(data){
         if (response.status !== 200 || result.data === undefined){
             checkError.textContent = "交易失敗，請確認信用卡資訊是否有誤";
             isOrder = false;
+            trading.style.display = "none"
             return false;
         }else{
             popupContent.innerHTML = "";
@@ -186,6 +191,7 @@ async function postOrder(data){
                 </div>
             `
             popupContent.insertAdjacentHTML('beforeend', loginSuccessHtml);
+            trading.style.display = "none"
             setTimeout(()=>{
                 window.location.href = "/order";
             }, 2000);

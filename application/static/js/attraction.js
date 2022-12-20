@@ -12,6 +12,7 @@ const attractionTopLeft = document.querySelector(".attractionTopLeft");
 const attractionTopRight = document.querySelector(".attractionTopRight");
 const attractionBottom = document.querySelector(".attractionBottom");
 const loading = document.querySelector(".loading");
+let bookingImg;
 let errorBooking;
 let isBooking = false;
 getAttractions(url)
@@ -137,6 +138,7 @@ function topRightRender(){
                 </div>
                 <div class="bookingSubmitBox">
                     <button class="bookingSubmit" type="submit">開始預約行程</button>
+                    <img class="bookingImg" src="/static/image/trading.gif" alt=""/>
                     <div class="errorBooking"></div>
                 </div>
             </div>
@@ -148,6 +150,7 @@ function topRightRender(){
     const chooseAfternoon = document.querySelector(".chooseAfternoon");
     const bookingSubmit = document.querySelector(".bookingSubmit");
     const fee = document.querySelector(".fee");
+    bookingImg = document.querySelector(".bookingImg");
     errorBooking = document.querySelector(".errorBooking");
     chooseMorning.addEventListener("click", ()=>{
         if (chooseAfternoon.checked){
@@ -164,15 +167,18 @@ function topRightRender(){
     bookingSubmit.addEventListener("click", ()=>{
         if (!isBooking){
             isBooking = true;
+            bookingImg.style.display = "block"
             let time;
             let price;
             if (!chooseDate.value){
                 errorBooking.textContent = "請選日期";
                 isBooking = false;
+                bookingImg.style.display = "none";
                 return false;
             }
             if (!chooseMorning.checked && !chooseAfternoon.checked){
                 errorBooking.textContent = "請選時間";
+                bookingImg.style.display = "none";
                 isBooking = false;
                 return false
             }else{
@@ -233,6 +239,7 @@ async function bookAttraction(data){
                     </div>
                 `
                 popupContent.insertAdjacentHTML('beforeend', loginSuccessHtml);
+                bookingImg.style.display = "none";
                 setTimeout(()=>{
                     window.location.href = "/booking";
                 }, 2000);

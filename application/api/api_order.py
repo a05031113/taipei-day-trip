@@ -11,6 +11,14 @@ def order():
     return render_template("order.html")
 
 
+@api_order.route("/api/order/<orderNumber>", methods=["GET"])
+@jwt_required()
+def api_order_number_get(orderNumber):
+    order_information = database.get_order_information_by_number(orderNumber)
+    output = data_output.order_data_by_number(order_information)
+    return jsonify(output)
+
+
 @api_order.route("/api/orders", methods=["GET"])
 @jwt_required()
 def api_order_get():
