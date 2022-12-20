@@ -13,6 +13,7 @@ const attractionTopRight = document.querySelector(".attractionTopRight");
 const attractionBottom = document.querySelector(".attractionBottom");
 const loading = document.querySelector(".loading");
 let errorBooking;
+let isBooking = false;
 getAttractions(url)
 async function getAttractions(url){
     try{
@@ -161,31 +162,36 @@ function topRightRender(){
         fee.textContent = "新台幣2500元"
     });
     bookingSubmit.addEventListener("click", ()=>{
-        let time;
-        let price;
-        if (!chooseDate.value){
-            errorBooking.textContent = "請選日期";
-            return false;
-        }
-        if (!chooseMorning.checked && !chooseAfternoon.checked){
-            errorBooking.textContent = "請選時間";
-            return false
-        }else{
-            if (chooseMorning.checked){
-                time = "morning";
-                price = 2000;
-            }else if(chooseAfternoon.checked){
-                time = "afternoon";
-                price = 2500;
+        if (!isBooking){
+            isBooking = true;
+            let time;
+            let price;
+            if (!chooseDate.value){
+                errorBooking.textContent = "請選日期";
+                isBooking = false;
+                return false;
             }
+            if (!chooseMorning.checked && !chooseAfternoon.checked){
+                errorBooking.textContent = "請選時間";
+                isBooking = false;
+                return false
+            }else{
+                if (chooseMorning.checked){
+                    time = "morning";
+                    price = 2000;
+                }else if(chooseAfternoon.checked){
+                    time = "afternoon";
+                    price = 2500;
+                }
+            }
+            output = {
+                "attractionId": id,
+                "date": chooseDate.value,
+                "time": time,
+                "price": price
+            }
+            bookAttraction(output);
         }
-        output = {
-            "attractionId": id,
-            "date": chooseDate.value,
-            "time": time,
-            "price": price
-        }
-        bookAttraction(output);
     });
 }
 function bottomRender(){
@@ -202,7 +208,7 @@ async function bookAttraction(data){
     try{
         const isLogin = await fetch("/refresh")
         if (isLogin.status !== 200){
-            login.style.display = "flex";
+            loginForm();
             return false;
         }else{
             const options = {
@@ -216,7 +222,20 @@ async function bookAttraction(data){
             };
             const response = await fetch("/api/booking", options);
             if (response.status === 200){
-                errorBooking.textContent = "預定成功";
+                popupContent.innerHTML = "";
+                popup.style.display = "flex"
+                const loginSuccessHtml= `
+                    <div class="popupDiv">
+                        <div>
+                            <div class="popupMessage">預定成功！</div>
+                            <div class="popupSubMessage">稍後為您跳轉至預訂頁面</div>
+                        </div>
+                    </div>
+                `
+                popupContent.insertAdjacentHTML('beforeend', loginSuccessHtml);
+                setTimeout(()=>{
+                    window.location.href = "/booking";
+                }, 2000);
             }
         }
     }catch(error){

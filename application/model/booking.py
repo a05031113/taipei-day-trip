@@ -19,13 +19,13 @@ class database:
         db.close()
         return booking_data_all
 
-    def image_url(booking_data):
+    def image_url(attraction_id):
         db = connection()
         cursor = db.cursor(buffered=True, dictionary=True)
         select_image = """
             SELECT image_url FROM images WHERE attraction_id = %s
             """
-        select_id = (booking_data["attraction_id"],)
+        select_id = (attraction_id,)
         cursor.execute(select_image, select_id)
         attraction_image = cursor.fetchone()["image_url"]
         cursor.close()
@@ -67,10 +67,11 @@ class data_output:
         output = {}
         data_list = []
         for booking_data in booking_data_all:
-            attraction_image = database.image_url(booking_data)
+            attraction_id = booking_data["attraction_id"]
+            attraction_image = database.image_url(attraction_id)
             data = {}
             attraction = {}
-            attraction["id"] = booking_data["attraction_id"]
+            attraction["id"] = attraction_id
             attraction["name"] = booking_data["name"]
             attraction["address"] = booking_data["address"]
             attraction["image"] = attraction_image

@@ -23,11 +23,9 @@ let checkTrip = [];
 const contactName = document.getElementById("contactName");
 const contactEmail = document.getElementById("contactEmail");
 const contactNumber = document.getElementById("contactNumber");
-// const creditNumber = document.getElementById("card-number");
-// const creditExpire = document.getElementById("card-expiration-date");
-// const verifyCode = document.getElementById("card-ccv");
 const checkError = document.querySelector(".checkError");
 const checkAndPay = document.getElementById("checkAndPay");
+let isOrder = false;
 getData();
 
 TPDirect.setupSDK(
@@ -86,30 +84,35 @@ TPDirect.card.setup({
     }
 });
 checkAndPay.addEventListener("click", ()=>{
-    TPDirect.card.getPrime(function (result) {
-        if (!contactName.value || !contactEmail.value || !contactNumber.value){
-            checkError.textContent = "請輸入聯絡資訊";
-            return false;
-        }
-        if (result.status !==0){
-            checkError.textContent = "請輸入信用卡資訊";
-            return false;
-        }
-        let primeCode = result.card.prime;
-        const output = {
-            "prime": primeCode,
-            "order": {
-                "price": totalCost,
-                "trip": checkTrip
-            },
-            "contact": {
-                "name": contactName.value,
-                "email": contactEmail.value,
-                "phone": contactNumber.value
+    if (!isOrder){
+        isOrder = true;
+        TPDirect.card.getPrime(function (result) {
+            if (!contactName.value || !contactEmail.value || !contactNumber.value){
+                checkError.textContent = "請輸入聯絡資訊";
+                isOrder = false;
+                return false;
             }
-        };
-        checkInformation(output);
-    });
+            if (result.status !==0){
+                checkError.textContent = "請確認信用卡資訊";
+                isOrder = false;
+                return false;
+            }
+            let primeCode = result.card.prime;
+            const output = {
+                "prime": primeCode,
+                "order": {
+                    "price": totalCost,
+                    "trip": checkTrip
+                },
+                "contact": {
+                    "name": contactName.value,
+                    "email": contactEmail.value,
+                    "phone": contactNumber.value
+                }
+            };
+            checkInformation(output);
+        });
+    }
 });
 async function getData(){
     try{
@@ -142,6 +145,56 @@ async function getData(){
         console.log({"error": error});
     }
 }
+async function checkInformation(output){
+    try{
+        const isLogin = await fetch("/refresh")
+        if (isLogin.status !== 200){
+            window.location.href = "/"
+        }else{
+            postOrder(output);    
+        }
+    }catch(error){
+        console.log({"error":error});
+    }
+}
+async function postOrder(data){
+    try{
+        let response = await fetch("/api/orders", {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": getCookie("csrf_access_token")
+            }
+        });
+        let result = await response.json();
+        console.log(result.data)
+        if (response.status !== 200 || result.data === undefined){
+            checkError.textContent = "交易失敗，請確認信用卡資訊是否有誤";
+            isOrder = false;
+            return false;
+        }else{
+            popupContent.innerHTML = "";
+            popup.style.display = "flex"
+            const loginSuccessHtml= `
+                <div class="popupDiv">
+                    <div>
+                        <div class="popupMessage">訂單完成！</div>
+                        <div class="popupSubMessage">感謝您的訂購，並祝您旅途愉快</div>
+                        <div class="popupSubMessage">稍後為您跳轉至歷史訂單</div>
+                    </div>
+                </div>
+            `
+            popupContent.insertAdjacentHTML('beforeend', loginSuccessHtml);
+            setTimeout(()=>{
+                window.location.href = "/order";
+            }, 2000);
+        }
+    }catch(error){
+        console.log({"error":error})
+    }
+}
+
 function noneBookingRender(){
     const noneBookingHtml = `
         <div class="helloWidth">
@@ -215,18 +268,6 @@ function bookingRender(){
     total.insertAdjacentHTML("beforeend", priceHtml);
     loading.style.display = "none";
 }
-async function checkInformation(output){
-    try{
-        const isLogin = await fetch("/refresh")
-        if (isLogin.status !== 200){
-            window.location.href = "/"
-        }else{
-            postOrder(output);    
-        }
-    }catch(error){
-        console.log({"error":error});
-    }
-}
 function deleteThis(element){
     const itemNumber = element.offsetParent.innerText.split("：").slice(-1)[0];
     element.offsetParent.parentElement.parentElement.parentElement.innerHTML="";
@@ -263,25 +304,7 @@ async function deleteBooking(data){
         console.log({"error":error});
     }
 }
-async function postOrder(data){
-    try{
-        let response = await fetch("/api/orders", {
-            method: "POST",
-            body: JSON.stringify(data),
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": getCookie("csrf_access_token")
-            }
-        });
-        let result = await response.json();
-        if (response.status === 200){
-            console.log(result);
-            checkError.textContent = "完成訂單"
-        }
-    }catch(error){
-        console.log({"error":error})
-    }
-}
+
 function getCookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);

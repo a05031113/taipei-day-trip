@@ -3,7 +3,6 @@ const loading = document.querySelector(".loading");
 let searchSearchDiv = document.querySelector(".searchInput");
 let attractionsDiv = document.querySelector(".indexAttractionsBox");
 let categoriesDiv = document.querySelector(".categories");
-let ghostSearch = document.querySelector(".ghostSearch");
 let searchInput = document.querySelector(".searchInput");
 let nextPage;
 let keyword;
@@ -30,7 +29,7 @@ searchBtn.addEventListener("click", ()=>{
             isLoading = true;
             getAttractions(url);
             categoriesDiv.style.display="none";
-            ghostSearch.style.display="none";
+            ghost.style.display="none";
         }
     }else{
         return false;
@@ -62,15 +61,15 @@ const observer = new IntersectionObserver(callback, {
 });
 observer.observe(listEnd);
 searchSearchDiv.addEventListener("click", ()=>{
-    ghostSearch.style.display="block";
+    ghost.style.display="block";
     categoriesDiv.style.display="flex";
     searchInput.style.zIndex="2";
     searchBtn.style.zIndex="2";
 });
 window.addEventListener("click", (event)=>{
-    if (event.target===ghostSearch){
+    if (event.target===ghost){
         categoriesDiv.style.display="none";
-        ghostSearch.style.display="none"
+        ghost.style.display="none"
         searchInput.style.zIndex="1";
         searchBtn.style.zIndex="1";
     }
@@ -133,7 +132,7 @@ async function getAttractions(url){
 function chooseCat(element){
     keywordDiv.value = element.textContent;
     categoriesDiv.style.display="none";
-    ghostSearch.style.display="none"
+    ghost.style.display="none"
     searchInput.style.zIndex="1";
     searchBtn.style.zIndex="1"
 }
