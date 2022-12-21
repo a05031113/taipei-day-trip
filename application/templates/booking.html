@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block main %}
+    <script src="https://js.tappaysdk.com/sdk/tpdirect/v5.14.0"></script>
+    <div class="sectionBox">
+        <div class="helloItems"></div>
+    </div>
+    <div class="sectionBox">
+        <div class="bookingItems"></div>
+    </div>
+    <div class="sectionBox">
+        <div class="contactItems">
+            <div class="contactBoxInside">
+                <div class="contactBoxPosition">
+                    <div class="contactInformation">
+                        <div class="contactTitle">您的聯絡資訊</div>
+                        <div class="contactDetail">
+                            <div class="contactName">聯絡姓名：</div>
+                            <input id="contactName" class="contactInput" type="text" placeholder="姓名"/>
+                        </div>
+                        <div class="contactDetail">
+                            <div class="contactName">聯絡信箱：</div>
+                            <input id="contactEmail" class="contactInput" type="text" placeholder="信箱"/>
+                        </div>
+                        <div class="contactDetail">
+                            <div class="contactName">手機號碼：</div>
+                            <input id="contactNumber" class="contactInput" type="text" placeholder="手機號碼"/>
+                        </div>
+                        <div class="notification">請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。</div>
+                    </div>
+                </div>
+                <hr style="border: 1px solid #E8E8E8; height: 0px">
+            </div>
+        </div>
+    </div>
+    <div class="sectionBox">
+        <div class="creditItems">
+            <div class="contactBoxInside">
+                <div class="contactBoxPosition">
+                    <div class="contactInformation">
+                        <div class="contactTitle">信用卡聯絡資訊</div>
+                        <div class="contactDetail">
+                            <div class="contactName">卡片號碼：</div>
+                            <div id="card-number" class="tpfield" type="text"></div>
+                        </div>
+                        <div class="contactDetail">
+                            <div class="contactName">過期時間：</div>
+                            <div id="card-expiration-date" class="tpfield" type="text"></div>
+                        </div>
+                        <div class="contactDetail">
+                            <div class="contactName">驗證密碼：</div>
+                            <div id="card-ccv" class="tpfield" type="password"></div>
+                        </div>
+                    </div>
+                </div>
+                <hr style="border: 1px solid #E8E8E8; height: 0px">
+            </div>
+        </div>
+    </div>
+    <div class="priceItems">
+        <div class="finalPrice">
+            <div class="verifyPosition" id="total"></div>
+            <div class="verifyPosition">
+                <button id="checkAndPay" class="checkBtn">確認訂購並付款</button>
+                <img class="trading" src="/static/image/trading.gif" alt=""/>
+            </div>
+            <div class="verifyPosition">
+                <div class="checkError"></div>
+            </div>
+        </div>
+    </div>
+    <script src="/static/js/booking.js"></script>
+{% endblock %}
