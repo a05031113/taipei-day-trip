@@ -220,3 +220,12 @@ class data_output:
             "date": information["date"],
             "time": information["time"]
         }
+
+    def amount(trips):
+        price = 0
+        for trip in trips:
+            if trip["time"] == "morning":
+                price += 2000
+            elif trip["time"] == "afternoon":
+                price += 2500
+        return price

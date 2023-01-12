@@ -1,36 +1,28 @@
-# from application.model.db import *
+import boto3
+import requests
 
-# db = connection()
-# cursor = db.cursor()
+test_file = 'icon_setting.png'
 
-# # check_password = "SELECT password, id FROM members WHERE email = %s"
-# # check_value = ("a05031113@gmail.com", )
-# # cursor.execute(check_password, check_value)
-# # account = cursor.fetchone()
-# # # images = images[0][0].split(",")
-# # # images = []
-# # # for image_url in images:
-# # #     print(image_url[0])
+s3_client = boto3.client(
+    's3',
+    endpoint_url="https://8991e795ca5753a87e4898f1070227f7.r2.cloudflarestorage.com",
+    aws_access_key_id="6831794db4ed58acb5ef556c7e91a3f0",
+    aws_secret_access_key="43b9623de13e33c8c4a2c5f5700d569cd1c213a459090b449cb6d4e0e0c1aa05"
+)
 
-# # print(account[1])
-# email = "a05031113@@gma.il.com"
+# Generate the presigned URL
+response = s3_client.generate_presigned_url(
+    ClientMethod='put_object',
+    Params={
+        'Bucket': 'test',
+        'Key': test_file,
+    },
+    ExpiresIn=3600
+)
 
-# if email_valid(email) == False:
-#     print("falsw")
-# else:
-#     print("true")
+print(response)
 
-import threading
-
-
-class MyJob(threading.Thread):
-    def run(self):
-        for i in range(5):
-            print(i)
-
-
-job1 = MyJob()  # 建立執行緒
-job1.start()  # 啟動執行緒，執行 run 函式中的程式碼
-print("Hello")
-job2 = MyJob()
-job2.start()
+# Upload file to S3 using presigned URL
+files = {'file': open(test_file, 'rb')}
+r = requests.put(response, files=files)
+print(r.status_code)

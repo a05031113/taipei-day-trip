@@ -41,6 +41,8 @@ def api_order_post():
     try:
         if not phone_number or not name or not email:
             return jsonify({"error": True, "message": "缺少資訊"})
+        if amount != data_output.amount(data["order"]["trip"]):
+            return jsonify({"error": True, "message": "資訊有誤"})
         output = tap_pay.check_payment(
             prime, amount, name, email, phone_number, data["order"]["trip"], member_id)
         return jsonify(output)
