@@ -215,6 +215,7 @@ async function bookAttraction(data){
         const isLogin = await fetch("/refresh")
         if (isLogin.status !== 200){
             loginForm();
+            bookingImg.style.display = "none";
             return false;
         }else{
             const options = {

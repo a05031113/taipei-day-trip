@@ -180,7 +180,8 @@ async function postOrder(data){
             return false;
         }else{
             popupContent.innerHTML = "";
-            popup.style.display = "flex"
+            popup.style.display = "flex";
+            trading.style.display = "none";
             const loginSuccessHtml= `
                 <div class="popupDiv">
                     <div>
@@ -191,7 +192,6 @@ async function postOrder(data){
                 </div>
             `
             popupContent.insertAdjacentHTML('beforeend', loginSuccessHtml);
-            trading.style.display = "none"
             setTimeout(()=>{
                 window.location.href = "/order";
             }, 2000);

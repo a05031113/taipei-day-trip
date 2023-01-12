@@ -19,8 +19,6 @@ def create_app():
         app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=6)
         app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=7)
 
-        jwt.init_app(app)
-
         app.register_blueprint(api_attractions)
         app.register_blueprint(api_users)
         app.register_blueprint(api_booking)
