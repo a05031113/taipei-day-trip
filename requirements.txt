@@ -1,6 +1,6 @@
 flask
 werkzeug
-mysql.connector
+mysql-connector-python
 flask-jwt-extended
 python-dotenv
 requests
